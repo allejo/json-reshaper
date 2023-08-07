@@ -1,0 +1,10 @@
+@import '@tabler/core/dist/css/tabler.min.css';
+
+input[aria-invalid='true'],
+textarea[aria-invalid='true'] {
+	@extend .form-control.is-invalid;
+
+	~ .invalid-feedback {
+		@extend .is-invalid ~ .invalid-feedback;
+	}
+}
