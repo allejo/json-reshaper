@@ -1,4 +1,4 @@
-import { json as applyJqFilter } from 'jq-web';
+import { search as applyJMESPath } from 'jmespath';
 import {
 	ClipboardEvent,
 	SyntheticEvent,
@@ -21,15 +21,16 @@ function tryParseJson(json: string): Record<symbol, unknown> {
 }
 
 interface Props {
+	filteredJson: Record<symbol, unknown>;
 	onJsonFiltered: (filteredJson: Record<symbol, unknown>) => void;
 }
 
-export const JsonInput = ({ onJsonFiltered }: Props) => {
+export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 	const [rawJson, setRawJson] = useState('');
 	const [rawJsonError, setRawJsonError] = useState<string | null>(null);
 	const [parsedJson, setParsedJson] = useState<Record<symbol, unknown>>({});
-	const [jqFilter, setJqFilter] = useState('');
-	const [jqFilterError, setJqFilterError] = useState<string | null>(null);
+	const [jmesPath, setJmesPath] = useState('');
+	const [jmesPathError, setJmesPathError] = useState<string | null>(null);
 
 	const handleFromJsonOnChange = useCallback(
 		(event: SyntheticEvent<HTMLTextAreaElement>) => {
@@ -58,14 +59,11 @@ export const JsonInput = ({ onJsonFiltered }: Props) => {
 		},
 		[],
 	);
-	const handleJqFilterOnChange = useCallback(
+	const handleJmesPathOnChange = useCallback(
 		(event: SyntheticEvent<HTMLInputElement>) => {
-			setJqFilter(event.currentTarget.value);
-			const filteredJson = applyJqFilter(parsedJson, jqFilter);
-
-			onJsonFiltered(filteredJson);
+			setJmesPath(event.currentTarget.value);
 		},
-		[parsedJson, jqFilter, onJsonFiltered],
+		[],
 	);
 
 	useEffect(() => {
@@ -81,6 +79,23 @@ export const JsonInput = ({ onJsonFiltered }: Props) => {
 			}
 		}
 	}, [rawJson]);
+
+	useEffect(() => {
+		setJmesPathError(null);
+
+		if (jmesPath.trim() === '') {
+			onJsonFiltered(parsedJson);
+			return;
+		}
+
+		try {
+			onJsonFiltered(applyJMESPath(parsedJson, jmesPath));
+		} catch (e) {
+			if (e instanceof Error) {
+				setJmesPathError(e.message);
+			}
+		}
+	}, [parsedJson, jmesPath]);
 
 	return (
 		<form
@@ -103,16 +118,16 @@ export const JsonInput = ({ onJsonFiltered }: Props) => {
 			</div>
 			<div className="flex flex-col gap-1">
 				<label className="font-bold" htmlFor="jq-filter">
-					<code>jq</code> filter
+					<a href="https://jmespath.org/tutorial.html">JMESPath</a>
 				</label>
-				<input type="text" id="jq-filter" onChange={handleJqFilterOnChange} />
-				{jqFilterError && <p className="text-red-800">{jqFilterError}</p>}
+				<input type="text" id="jq-filter" onChange={handleJmesPathOnChange} />
+				{jmesPathError && <p className="text-red-800">{jmesPathError}</p>}
 			</div>
 			<div className="flex flex-col gap-1">
 				<p className="font-bold">Filtered JSON</p>
 				<div className="bg-slate-700 grow overflow-auto rounded">
 					<pre className="h-full m-0 p-3 text-white max-w-0">
-						{JSON.stringify(parsedJson, null, '\t')}
+						{JSON.stringify(filteredJson, null, '\t')}
 					</pre>
 				</div>
 			</div>

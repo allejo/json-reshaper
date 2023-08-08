@@ -9,7 +9,10 @@ function App() {
 	return (
 		<div className="container mx-auto">
 			<div className="grid grid-cols-2 gap-4">
-				<JsonInput onJsonFiltered={setFilteredJson} />
+				<JsonInput
+					filteredJson={filteredJson}
+					onJsonFiltered={setFilteredJson}
+				/>
 				<div className=""></div>
 			</div>
 		</div>

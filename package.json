@@ -14,9 +14,10 @@
 	"dependencies": {
 		"@ariakit/react": "^0.2.15",
 		"@react-hooks-library/core": "^0.5.1",
+		"@types/jmespath": "^0.15.0",
 		"@types/lodash": "^4.14.196",
 		"autoprefixer": "^10.4.14",
-		"jq-web": "^0.5.1",
+		"jmespath": "^0.16.0",
 		"lodash": "^4.17.21",
 		"postcss": "^8.4.27",
 		"postcss-extend-rule": "^4.0.0",
