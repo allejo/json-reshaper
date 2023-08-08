@@ -1,14 +1,16 @@
+import { useState } from 'react';
+
 import './App.css';
 import { JsonInput } from './components/JsonInput.tsx';
 
 function App() {
+	const [filteredJson, setFilteredJson] = useState<Record<symbol, unknown>>({});
+
 	return (
-		<div className="container-fluid">
-			<div className="row vh-100">
-				<div className="col-6">
-					<JsonInput />
-				</div>
-				<div className="col-6"></div>
+		<div className="container mx-auto">
+			<div className="grid grid-cols-2 gap-4">
+				<JsonInput onJsonFiltered={setFilteredJson} />
+				<div className=""></div>
 			</div>
 		</div>
 	);

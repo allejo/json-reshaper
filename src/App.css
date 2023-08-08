@@ -1,10 +1,16 @@
-@import '@tabler/core/dist/css/tabler.min.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-input[aria-invalid='true'],
-textarea[aria-invalid='true'] {
-	@extend .form-control.is-invalid;
+body {
+	@apply bg-slate-200;
+}
 
-	~ .invalid-feedback {
-		@extend .is-invalid ~ .invalid-feedback;
-	}
+label {
+	@apply block mb-1;
+}
+
+input:not([type='checkbox']):not([type='radio']),
+textarea {
+	@apply border rounded;
 }
