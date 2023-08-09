@@ -12,5 +12,28 @@ label {
 
 input:not([type='checkbox']):not([type='radio']),
 textarea {
-	@apply border rounded;
+	@apply border px-2 py-1 rounded w-full;
+}
+
+table {
+	& thead {
+		@apply border-b-2;
+	}
+
+	& th {
+		@apply whitespace-nowrap;
+	}
+
+	& td,
+	& th {
+		@apply p-2;
+	}
+
+	& td:not(:last-child) {
+		@apply border-r;
+	}
+}
+
+.window-height {
+	@apply grid gap-4 h-screen max-h-screen max-w-full;
 }

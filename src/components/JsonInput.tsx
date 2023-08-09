@@ -98,10 +98,7 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 	}, [parsedJson, jmesPath]);
 
 	return (
-		<form
-			className="grid grid-rows-left-sidebar gap-4 h-screen max-h-screen max-w-full"
-			spellCheck={false}
-		>
+		<form className="window-height grid-rows-left-sidebar" spellCheck={false}>
 			<div className="flex flex-col gap-1">
 				<label className="font-bold" htmlFor="from-json">
 					From JSON

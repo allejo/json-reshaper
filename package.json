@@ -13,6 +13,10 @@
 	"prettier": "@allejo/prettier-config",
 	"dependencies": {
 		"@ariakit/react": "^0.2.15",
+		"@fortawesome/fontawesome-svg-core": "^6.4.2",
+		"@fortawesome/free-regular-svg-icons": "^6.4.2",
+		"@fortawesome/free-solid-svg-icons": "^6.4.2",
+		"@fortawesome/react-fontawesome": "^0.2.0",
 		"@react-hooks-library/core": "^0.5.1",
 		"@types/jmespath": "^0.15.0",
 		"@types/lodash": "^4.14.196",
