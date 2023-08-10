@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { IOutputComponentProps } from '../contracts.ts';
 import { applyJMESPath } from '../utilities.ts';
@@ -6,10 +6,14 @@ import { applyJMESPath } from '../utilities.ts';
 type Props = IOutputComponentProps;
 
 export const OutputAsCsv = ({
-	columnQueries,
+	transformManifest,
 	filteredJson,
 	onCopyOutput,
 }: Props) => {
+	const manifest = useMemo(
+		() => Object.values(transformManifest),
+		[transformManifest],
+	);
 	const [processed, setProcessed] = useState<Array<Array<unknown>>>([]);
 
 	useEffect(() => {
@@ -18,7 +22,7 @@ export const OutputAsCsv = ({
 		for (const jsonElement of filteredJson) {
 			const row: Array<unknown> = [];
 
-			for (const columnDefinition of columnQueries) {
+			for (const columnDefinition of manifest) {
 				const query = columnDefinition.query;
 
 				if (query.trim() === '') {
@@ -39,15 +43,15 @@ export const OutputAsCsv = ({
 		}
 
 		setProcessed(result);
-	}, [columnQueries, filteredJson, onCopyOutput]);
+	}, [transformManifest, filteredJson, onCopyOutput, manifest]);
 
 	return (
 		<div className="bg-white rounded">
 			<table className="min-w-full">
 				<thead>
 					<tr className="text-left">
-						{columnQueries.map((column, index) => (
-							<th key={index}>{column.name}</th>
+						{manifest.map((column) => (
+							<th key={column.uuid}>{column.name}</th>
 						))}
 					</tr>
 				</thead>

@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useState } from 'react';
 
-import { ColumnDefinition } from './ColumnEditor.tsx';
+import { TransformManifest } from '../contracts.ts';
 import { OutputAsCsv } from './OutputAsCsv.tsx';
 
 enum OutputFormat {
@@ -8,7 +8,7 @@ enum OutputFormat {
 }
 
 interface Props {
-	columnQueries: ColumnDefinition[];
+	columnQueries: TransformManifest;
 	filteredJson: Record<symbol, unknown>[];
 }
 
@@ -44,7 +44,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 			</div>
 			{format === OutputFormat.CSV && (
 				<OutputAsCsv
-					columnQueries={columnQueries}
+					transformManifest={columnQueries}
 					filteredJson={filteredJson}
 					onCopyOutput={() => {}}
 				/>

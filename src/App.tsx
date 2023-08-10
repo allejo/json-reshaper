@@ -1,18 +1,16 @@
 import { useState } from 'react';
 
 import './App.css';
-import { ColumnDefinition, ColumnEditor } from './components/ColumnEditor.tsx';
+import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
+import { TransformManifest } from './contracts.ts';
 
 function App() {
 	const [filteredJson, setFilteredJson] = useState<Record<symbol, unknown>[]>(
 		[],
 	);
-	const [columnQueries, setColumnQueries] = useState<ColumnDefinition[]>([
-		{ name: 'Company', query: 'company.name', type: 'string' },
-		{ name: 'Position', query: 'job_posting.title', type: 'string' },
-	]);
+	const [columnQueries, setColumnQueries] = useState<TransformManifest>({});
 
 	return (
 		<div className="container mx-auto">
@@ -23,8 +21,8 @@ function App() {
 				/>
 				<div className="window-height grid-rows-2">
 					<ColumnEditor
-						columns={columnQueries}
-						onColumnsChange={setColumnQueries}
+						transformManifest={columnQueries}
+						onManifestChange={setColumnQueries}
 					/>
 					<OutputPreview
 						columnQueries={columnQueries}

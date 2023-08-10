@@ -1,35 +1,36 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, useMemo } from 'react';
 
-export interface ColumnDefinition {
-	name: string;
-	type: string;
-	query: string;
-}
+import {
+	ColumnDefinition,
+	StateSetter,
+	TransformManifest,
+	UUIDv4,
+} from '../contracts.ts';
 
 interface ColumnEntryProps {
+	uuid: UUIDv4;
 	column: ColumnDefinition;
-	index: number;
-	onChange: (index: number, column: ColumnDefinition) => void;
-	onDelete: (index: number) => void;
+	onChange: (uuid: UUIDv4, name: string, value: string) => void;
+	onDelete: (uuid: UUIDv4) => void;
 }
 
 const ColumnEntry = ({
 	column,
-	index,
+	uuid,
 	onChange,
 	onDelete,
 }: ColumnEntryProps) => {
 	const handleOnChange = useCallback(
 		(key: string) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-			onChange(index, { ...column, [key]: e.currentTarget.value });
+			onChange(uuid, key, e.currentTarget.value);
 		},
-		[],
+		[onChange, uuid],
 	);
 	const handleOnDelete = useCallback(() => {
-		onDelete(index);
-	}, []);
+		onDelete(uuid);
+	}, [onDelete, uuid]);
 
 	return (
 		<tr>
@@ -63,36 +64,54 @@ const ColumnEntry = ({
 };
 
 interface Props {
-	columns: ColumnDefinition[];
-	onColumnsChange: (columns: ColumnDefinition[]) => void;
+	transformManifest: TransformManifest;
+	onManifestChange: StateSetter<TransformManifest>;
 }
 
-export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
+export const ColumnEditor = ({
+	transformManifest,
+	onManifestChange,
+}: Props) => {
+	const manifest = useMemo(
+		() => Object.values(transformManifest),
+		[transformManifest],
+	);
+
 	const handleOnAdd = useCallback(() => {
-		const newColumns = [...columns];
+		const uuid = crypto.randomUUID();
 
-		newColumns.push({ name: '', query: '', type: 'string' });
-
-		onColumnsChange(newColumns);
-	}, [columns, onColumnsChange]);
+		onManifestChange((prevManifest) => ({
+			...prevManifest,
+			[uuid]: {
+				uuid,
+				name: '',
+				type: 'string',
+				query: '',
+			},
+		}));
+	}, [onManifestChange]);
 	const handleOnDelete = useCallback(
-		(index: number) => {
-			const newColumns = [...columns];
+		(uuid: UUIDv4) => {
+			onManifestChange((prevManifest) => {
+				const newManifest = { ...prevManifest };
+				delete newManifest[uuid];
 
-			newColumns.splice(index, 1);
-
-			onColumnsChange(newColumns);
+				return newManifest;
+			});
 		},
-		[columns, onColumnsChange],
+		[onManifestChange],
 	);
 	const handleOnEdit = useCallback(
-		(index: number, column: ColumnDefinition) => {
-			const newColumns = [...columns];
-
-			newColumns[index] = column;
-			onColumnsChange(newColumns);
+		(uuid: UUIDv4, name: string, value: string) => {
+			onManifestChange((prevManifest) => ({
+				...prevManifest,
+				[uuid]: {
+					...prevManifest[uuid],
+					[name]: value,
+				},
+			}));
 		},
-		[columns, onColumnsChange],
+		[onManifestChange],
 	);
 
 	return (
@@ -110,11 +129,11 @@ export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
 						</tr>
 					</thead>
 					<tbody>
-						{columns.map((column, index) => (
+						{manifest.map((column) => (
 							<ColumnEntry
-								key={index}
+								key={column.uuid}
 								column={column}
-								index={index}
+								uuid={column.uuid}
 								onChange={handleOnEdit}
 								onDelete={handleOnDelete}
 							/>
