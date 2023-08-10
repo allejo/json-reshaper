@@ -3,12 +3,15 @@ import { useState } from 'react';
 import './App.css';
 import { ColumnDefinition, ColumnEditor } from './components/ColumnEditor.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
+import { OutputPreview } from './components/OutputPreview.tsx';
 
 function App() {
-	const [filteredJson, setFilteredJson] = useState<Record<symbol, unknown>>({});
+	const [filteredJson, setFilteredJson] = useState<Record<symbol, unknown>[]>(
+		[],
+	);
 	const [columnQueries, setColumnQueries] = useState<ColumnDefinition[]>([
-		{ name: 'Company', query: 'company_name', type: 'string' },
-		{ name: 'Position', query: 'position', type: 'string' },
+		{ name: 'Company', query: 'company.name', type: 'string' },
+		{ name: 'Position', query: 'job_posting.title', type: 'string' },
 	]);
 
 	return (
@@ -22,6 +25,10 @@ function App() {
 					<ColumnEditor
 						columns={columnQueries}
 						onColumnsChange={setColumnQueries}
+					/>
+					<OutputPreview
+						columnQueries={columnQueries}
+						filteredJson={filteredJson}
 					/>
 				</div>
 			</div>

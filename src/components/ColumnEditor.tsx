@@ -1,4 +1,4 @@
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeEvent, useCallback } from 'react';
 
@@ -74,14 +74,17 @@ export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
 		newColumns.push({ name: '', query: '', type: 'string' });
 
 		onColumnsChange(newColumns);
-	}, []);
-	const handleOnDelete = useCallback((index: number) => {
-		const newColumns = [...columns];
+	}, [columns, onColumnsChange]);
+	const handleOnDelete = useCallback(
+		(index: number) => {
+			const newColumns = [...columns];
 
-		newColumns.splice(index, 1);
+			newColumns.splice(index, 1);
 
-		onColumnsChange(newColumns);
-	}, []);
+			onColumnsChange(newColumns);
+		},
+		[columns, onColumnsChange],
+	);
 	const handleOnEdit = useCallback(
 		(index: number, column: ColumnDefinition) => {
 			const newColumns = [...columns];
@@ -89,7 +92,7 @@ export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
 			newColumns[index] = column;
 			onColumnsChange(newColumns);
 		},
-		[],
+		[columns, onColumnsChange],
 	);
 
 	return (
@@ -109,6 +112,7 @@ export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
 					<tbody>
 						{columns.map((column, index) => (
 							<ColumnEntry
+								key={index}
 								column={column}
 								index={index}
 								onChange={handleOnEdit}
@@ -118,6 +122,7 @@ export const ColumnEditor = ({ columns, onColumnsChange }: Props) => {
 					</tbody>
 				</table>
 				<button className="border py-2 w-full" onClick={handleOnAdd}>
+					<FontAwesomeIcon icon={faPlus} className="mr-3" />
 					Add Column
 				</button>
 			</div>

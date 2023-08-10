@@ -1,4 +1,3 @@
-import { search as applyJMESPath } from 'jmespath';
 import {
 	ClipboardEvent,
 	SyntheticEvent,
@@ -6,8 +5,10 @@ import {
 	useEffect,
 	useState,
 } from 'react';
+import { useDebounce } from 'usehooks-ts';
 
-import { DisableGrammarlyProps } from '../utilities.ts';
+import { FilteredJson, JsonObject } from '../contracts.ts';
+import { applyJMESPath, DisableGrammarlyProps } from '../utilities.ts';
 
 function tryParseJson(json: string): Record<symbol, unknown> {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -21,16 +22,19 @@ function tryParseJson(json: string): Record<symbol, unknown> {
 }
 
 interface Props {
-	filteredJson: Record<symbol, unknown>;
-	onJsonFiltered: (filteredJson: Record<symbol, unknown>) => void;
+	filteredJson: FilteredJson;
+	onJsonFiltered: (filteredJson: FilteredJson) => void;
 }
 
 export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 	const [rawJson, setRawJson] = useState('');
 	const [rawJsonError, setRawJsonError] = useState<string | null>(null);
-	const [parsedJson, setParsedJson] = useState<Record<symbol, unknown>>({});
+	const [parsedJson, setParsedJson] = useState<JsonObject>({});
 	const [jmesPath, setJmesPath] = useState('');
 	const [jmesPathError, setJmesPathError] = useState<string | null>(null);
+
+	const debouncedRawJson = useDebounce(rawJson, 1000);
+	const debouncedJmesPath = useDebounce(jmesPath, 500);
 
 	const handleFromJsonOnChange = useCallback(
 		(event: SyntheticEvent<HTMLTextAreaElement>) => {
@@ -68,8 +72,8 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 
 	useEffect(() => {
 		try {
-			if (rawJson.trim() !== '') {
-				setParsedJson(tryParseJson(rawJson));
+			if (debouncedRawJson.trim() !== '') {
+				setParsedJson(tryParseJson(debouncedRawJson));
 				setRawJsonError(null);
 			}
 		} catch (e) {
@@ -78,24 +82,27 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 				setParsedJson({});
 			}
 		}
-	}, [rawJson]);
+	}, [debouncedRawJson]);
 
 	useEffect(() => {
 		setJmesPathError(null);
 
-		if (jmesPath.trim() === '') {
-			onJsonFiltered(parsedJson);
+		if (debouncedJmesPath.trim() === '') {
 			return;
 		}
 
 		try {
-			onJsonFiltered(applyJMESPath(parsedJson, jmesPath));
+			const filtered = applyJMESPath(parsedJson, debouncedJmesPath);
+
+			if (Array.isArray(filtered)) {
+				onJsonFiltered(filtered);
+			}
 		} catch (e) {
 			if (e instanceof Error) {
 				setJmesPathError(e.message);
 			}
 		}
-	}, [parsedJson, jmesPath]);
+	}, [debouncedJmesPath, onJsonFiltered, parsedJson]);
 
 	return (
 		<form className="window-height grid-rows-left-sidebar" spellCheck={false}>
