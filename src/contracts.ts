@@ -11,12 +11,13 @@ export interface ColumnDefinition {
 
 export type TransformManifest = Record<UUIDv4, ColumnDefinition>;
 
-export type DataTransformerFxn = (transformer: () => string) => void;
+export type DataTransformerFxn = () => string;
+export type TransformerMountFxn = (transformer: DataTransformerFxn) => void;
 
 export interface IOutputComponentProps {
 	transformManifest: TransformManifest;
 	filteredJson: Record<symbol, unknown>[];
-	onTransformerMount: DataTransformerFxn;
+	onTransformerMount: TransformerMountFxn;
 }
 
 export type JsonObject = Record<symbol, unknown>;
