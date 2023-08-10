@@ -1,20 +1,39 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { IOutputComponentProps } from '../contracts.ts';
 import { applyJMESPath } from '../utilities.ts';
 
 type Props = IOutputComponentProps;
 
-export const OutputAsCsv = ({
+/**
+ * @see https://stackoverflow.com/a/68146412
+ */
+function arrayToCsv(data: Array<Array<unknown>>): string {
+	return data
+		.map(
+			(row) =>
+				row
+					.map(String) // convert every value to String
+					.map((v) => v.replaceAll('"', '""')) // escape double colons
+					.map((v) => `"${v}"`) // quote it
+					.join(','), // comma-separated
+		)
+		.join('\r\n'); // rows starting on new lines
+}
+
+export const TransformCSV = ({
 	transformManifest,
 	filteredJson,
-	onCopyOutput,
+	onTransformerMount,
 }: Props) => {
 	const manifest = useMemo(
 		() => Object.values(transformManifest),
 		[transformManifest],
 	);
 	const [processed, setProcessed] = useState<Array<Array<unknown>>>([]);
+
+	const generatedCSV = useMemo(() => arrayToCsv(processed), [processed]);
+	const exportToCsv = useCallback(() => generatedCSV, [generatedCSV]);
 
 	useEffect(() => {
 		const result: Array<Array<unknown>> = [];
@@ -30,12 +49,10 @@ export const OutputAsCsv = ({
 					continue;
 				}
 
-				const value = applyJMESPath(jsonElement, columnDefinition.query);
-
-				if (value === undefined) {
-					row.push('');
-				} else {
-					row.push(value);
+				try {
+					row.push(applyJMESPath(jsonElement, query));
+				} catch {
+					row.push(null);
 				}
 			}
 
@@ -43,7 +60,11 @@ export const OutputAsCsv = ({
 		}
 
 		setProcessed(result);
-	}, [transformManifest, filteredJson, onCopyOutput, manifest]);
+	}, [transformManifest, filteredJson, manifest]);
+
+	useEffect(() => {
+		onTransformerMount(exportToCsv);
+	}, [exportToCsv, onTransformerMount]);
 
 	return (
 		<div className="bg-white rounded">
@@ -58,13 +79,9 @@ export const OutputAsCsv = ({
 				<tbody>
 					{processed.map((row, rowIndex) => (
 						<tr key={rowIndex}>
-							{row.map((cell, cellIndex) => {
-								if (typeof cell === 'object') {
-									return <td key={cellIndex}>{JSON.stringify(cell)}</td>;
-								}
-
-								return <td key={cellIndex}>{cell as string}</td>;
-							})}
+							{row.map((cell, cellIndex) => (
+								<td key={cellIndex}>{String(cell)}</td>
+							))}
 						</tr>
 					))}
 				</tbody>

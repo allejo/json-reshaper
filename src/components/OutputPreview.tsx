@@ -1,7 +1,7 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback, useRef, useState } from 'react';
 
-import { TransformManifest } from '../contracts.ts';
-import { OutputAsCsv } from './OutputAsCsv.tsx';
+import { DataTransformerFxn, TransformManifest } from '../contracts.ts';
+import { TransformCSV } from './TransformCSV.tsx';
 
 enum OutputFormat {
 	CSV = 'csv',
@@ -14,10 +14,19 @@ interface Props {
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
+	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
+		throw new Error('Transformer not mounted');
+	});
 
 	const handleFormatOnChange = useCallback(
 		(e: ChangeEvent<HTMLSelectElement>) => {
 			setFormat(e.currentTarget.value as OutputFormat);
+		},
+		[],
+	);
+	const handleTransformerMount = useCallback<DataTransformerFxn>(
+		(transformer) => {
+			getTransformedAsText.current = transformer;
 		},
 		[],
 	);
@@ -43,10 +52,10 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 				</div>
 			</div>
 			{format === OutputFormat.CSV && (
-				<OutputAsCsv
+				<TransformCSV
 					transformManifest={columnQueries}
 					filteredJson={filteredJson}
-					onCopyOutput={() => {}}
+					onTransformerMount={handleTransformerMount}
 				/>
 			)}
 		</section>
