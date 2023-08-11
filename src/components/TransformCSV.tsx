@@ -36,7 +36,7 @@ export const TransformCSV = ({
 	const exportToCsv = useCallback(() => generatedCSV, [generatedCSV]);
 
 	useEffect(() => {
-		const result: Array<Array<unknown>> = [];
+		const result: Array<Array<unknown>> = [manifest.map((c) => c.name)];
 
 		for (const jsonElement of filteredJson) {
 			const row: Array<unknown> = [];
