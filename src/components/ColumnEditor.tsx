@@ -1,4 +1,8 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+	faEllipsisVertical,
+	faPlus,
+	faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeEvent, useCallback, useMemo } from 'react';
 
@@ -118,32 +122,39 @@ export const ColumnEditor = ({
 		<section className="flex flex-col">
 			<p className="font-bold mb-2">Output Columns</p>
 
-			<div className="bg-white border grow rounded p-3">
-				<table className="mb-4 table-auto w-full">
-					<thead>
-						<tr className="text-left">
-							<th className="sr-only">Options</th>
-							<th className="w-1/4">Column Name</th>
-							<th className="w-1/5">Data Type</th>
-							<th className="w-full">Query</th>
-						</tr>
-					</thead>
-					<tbody>
-						{manifest.map((column) => (
-							<ColumnEntry
-								key={column.uuid}
-								column={column}
-								uuid={column.uuid}
-								onChange={handleOnEdit}
-								onDelete={handleOnDelete}
-							/>
-						))}
-					</tbody>
-				</table>
-				<button className="border py-2 w-full" onClick={handleOnAdd}>
-					<FontAwesomeIcon icon={faPlus} className="mr-3" />
-					Add Column
-				</button>
+			<div className="bg-white border grow overflow-hidden rounded p-3">
+				<div className="grid grid-rows-[minmax(0,_1fr)_min-content] h-full">
+					<div className="overflow-auto">
+						<table className="table-auto w-full">
+							<thead className="sticky top-0 bg-white">
+								<tr className="text-left">
+									<th className="text-center">
+										<FontAwesomeIcon icon={faEllipsisVertical} />
+										<span className="sr-only">Options</span>
+									</th>
+									<th className="w-1/4">Column Name</th>
+									<th className="w-1/5">Data Type</th>
+									<th className="w-full">Query</th>
+								</tr>
+							</thead>
+							<tbody className="overflow-y-auto">
+								{manifest.map((column) => (
+									<ColumnEntry
+										key={column.uuid}
+										column={column}
+										uuid={column.uuid}
+										onChange={handleOnEdit}
+										onDelete={handleOnDelete}
+									/>
+								))}
+							</tbody>
+						</table>
+					</div>
+					<button className="border mt-auto py-2 w-full" onClick={handleOnAdd}>
+						<FontAwesomeIcon icon={faPlus} className="mr-3" />
+						Add Column
+					</button>
+				</div>
 			</div>
 		</section>
 	);

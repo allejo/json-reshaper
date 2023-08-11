@@ -21,6 +21,14 @@ table {
 		@apply border-b-2;
 	}
 
+	& tr:not(:last-child) {
+		@apply border-b;
+	}
+
+	& tbody tr:nth-child(even) {
+		@apply bg-slate-100;
+	}
+
 	& th {
 		@apply whitespace-nowrap;
 	}
