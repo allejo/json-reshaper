@@ -4,12 +4,10 @@ import './App.css';
 import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
-import { TransformManifest } from './contracts.ts';
+import { FilteredJson, TransformManifest } from './contracts.ts';
 
 function App() {
-	const [filteredJson, setFilteredJson] = useState<Record<symbol, unknown>[]>(
-		[],
-	);
+	const [filteredJson, setFilteredJson] = useState<FilteredJson>([]);
 	const [columnQueries, setColumnQueries] = useState<TransformManifest>({});
 
 	return (

@@ -2,6 +2,7 @@ import { ChangeEvent, useCallback, useRef, useState } from 'react';
 
 import {
 	DataTransformerFxn,
+	FilteredJson,
 	TransformerMountFxn,
 	TransformManifest,
 } from '../contracts.ts';
@@ -13,7 +14,7 @@ enum OutputFormat {
 
 interface Props {
 	columnQueries: TransformManifest;
-	filteredJson: Record<symbol, unknown>[];
+	filteredJson: FilteredJson;
 }
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {

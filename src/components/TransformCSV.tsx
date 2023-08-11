@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IOutputComponentProps } from '../contracts.ts';
+import { IOutputComponentProps, NotFunction } from '../contracts.ts';
 import { applyJMESPath } from '../utilities.ts';
 
 type Props = IOutputComponentProps;
@@ -44,10 +44,10 @@ export const TransformCSV = ({
 			return;
 		}
 
-		const result: Array<Array<string>> = [];
+		const result: Array<Array<NotFunction>> = [];
 
 		for (const jsonElement of filteredJson) {
-			const row: Array<string> = [];
+			const row: Array<NotFunction> = [];
 
 			for (const columnDefinition of manifest) {
 				const { name, query } = columnDefinition;

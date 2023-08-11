@@ -16,11 +16,15 @@ export type TransformerMountFxn = (transformer: DataTransformerFxn) => void;
 
 export interface IOutputComponentProps {
 	transformManifest: TransformManifest;
-	filteredJson: Record<symbol, unknown>[];
+	filteredJson: FilteredJson;
 	onTransformerMount: TransformerMountFxn;
 }
 
-export type JsonObject = Record<symbol, unknown>;
-export type FilteredJson = (null | number | boolean | string | JsonObject)[];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+export type NotFunction<T = any> = T extends Function ? never : T;
+type ArrayLike<T> = T | T[];
+
+export type JsonObject<T = never> = Record<symbol, NotFunction<T>>;
+export type FilteredJson<T = never> = ArrayLike<NotFunction<T>>;
 
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;

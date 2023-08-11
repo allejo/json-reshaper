@@ -14,7 +14,7 @@ export const DisableGrammarlyProps = {
 // Literally a wrapper around JMESPath.search, so I don't have to exclude
 // the eslint rule every single time. And I don't want to disable this rule
 // entirely either.
-export function applyJMESPath<T = FilteredJson>(
+export function applyJMESPath<T extends FilteredJson>(
 	json: JsonObject,
 	query: string,
 ): T {
