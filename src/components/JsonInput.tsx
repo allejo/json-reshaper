@@ -10,12 +10,12 @@ import { useDebounce } from 'usehooks-ts';
 import { FilteredJson, JsonObject } from '../contracts.ts';
 import { applyJMESPath, DisableGrammarlyProps } from '../utilities.ts';
 
-function tryParseJson(json: string): Record<symbol, unknown> {
+function tryParseJson(json: string): JsonObject {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	const parsed = JSON.parse(json);
 
-	if (parsed && typeof parsed === 'object') {
-		return parsed as Record<symbol, unknown>;
+	if (parsed && (typeof parsed === 'object' || Array.isArray(parsed))) {
+		return parsed as JsonObject;
 	}
 
 	throw new SyntaxError('Invalid JSON');
@@ -105,8 +105,8 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 	}, [debouncedJmesPath, onJsonFiltered, parsedJson]);
 
 	return (
-		<form className="window-height grid-rows-left-sidebar" spellCheck={false}>
-			<div className="flex flex-col gap-1">
+		<form className="screen-half grid-rows-left-sidebar" spellCheck={false}>
+			<div className="flex flex-col">
 				<label className="font-bold" htmlFor="from-json">
 					From JSON
 				</label>
@@ -120,15 +120,15 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 				/>
 				{rawJsonError && <p className="text-red-800">{rawJsonError}</p>}
 			</div>
-			<div className="flex flex-col gap-1">
+			<div className="flex flex-col">
 				<label className="font-bold" htmlFor="jq-filter">
 					<a href="https://jmespath.org/tutorial.html">JMESPath</a>
 				</label>
 				<input type="text" id="jq-filter" onChange={handleJmesPathOnChange} />
 				{jmesPathError && <p className="text-red-800">{jmesPathError}</p>}
 			</div>
-			<div className="flex flex-col gap-1">
-				<p className="font-bold">Filtered JSON</p>
+			<div className="flex flex-col">
+				<p className="font-bold mb-2">Filtered JSON</p>
 				<div className="bg-slate-700 grow overflow-auto rounded">
 					<pre className="h-full m-0 p-3 text-white max-w-0">
 						{JSON.stringify(filteredJson, null, '\t')}

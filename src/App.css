@@ -7,7 +7,7 @@ body {
 }
 
 label {
-	@apply block mb-1;
+	@apply block mb-2;
 }
 
 input:not([type='checkbox']):not([type='radio']),
@@ -43,6 +43,6 @@ table {
 	}
 }
 
-.window-height {
-	@apply grid gap-4 h-screen max-h-screen max-w-full;
+.screen-half {
+	@apply grid gap-4 max-w-full;
 }

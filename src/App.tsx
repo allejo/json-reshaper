@@ -11,13 +11,13 @@ function App() {
 	const [columnQueries, setColumnQueries] = useState<TransformManifest>({});
 
 	return (
-		<div className="container mx-auto">
-			<div className="grid grid-cols-2 gap-4">
+		<div className="container h-screen max-h-screen mx-auto">
+			<div className="grid grid-cols-2 gap-4 p-4 h-full">
 				<JsonInput
 					filteredJson={filteredJson}
 					onJsonFiltered={setFilteredJson}
 				/>
-				<div className="window-height grid-rows-2">
+				<div className="screen-half grid-rows-2">
 					<ColumnEditor
 						transformManifest={columnQueries}
 						onManifestChange={setColumnQueries}
