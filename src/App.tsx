@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import './App.css';
 import { ColumnEditor } from './components/ColumnEditor.tsx';
+import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
 import { FilteredJson, TransformManifest } from './contracts.ts';
@@ -12,21 +13,25 @@ function App() {
 
 	return (
 		<div className="container h-screen max-h-screen mx-auto">
-			<div className="grid grid-cols-2 gap-4 p-4 h-full">
-				<JsonInput
-					filteredJson={filteredJson}
-					onJsonFiltered={setFilteredJson}
-				/>
-				<div className="screen-half grid-rows-2">
-					<ColumnEditor
-						transformManifest={columnQueries}
-						onManifestChange={setColumnQueries}
-					/>
-					<OutputPreview
-						columnQueries={columnQueries}
+			<div className="grid grid-rows-[min-content_minmax(0,_1fr)_min-content] gap-4 p-4 h-full">
+				<div />
+				<div className="grid grid-cols-2 gap-4">
+					<JsonInput
 						filteredJson={filteredJson}
+						onJsonFiltered={setFilteredJson}
 					/>
+					<div className="screen-half grid-rows-2">
+						<ColumnEditor
+							transformManifest={columnQueries}
+							onManifestChange={setColumnQueries}
+						/>
+						<OutputPreview
+							columnQueries={columnQueries}
+							filteredJson={filteredJson}
+						/>
+					</div>
 				</div>
+				<Footer />
 			</div>
 		</div>
 	);
