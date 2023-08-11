@@ -124,12 +124,22 @@ export const ColumnEditor = ({
 
 			<div className="bg-white border grow overflow-hidden rounded p-3">
 				<div className="grid grid-rows-[minmax(0,_1fr)_min-content] h-full">
-					<div className="overflow-auto">
+					<button
+						className="border order-2 mt-auto py-2 w-full"
+						onClick={handleOnAdd}
+					>
+						<FontAwesomeIcon icon={faPlus} className="mr-3" fixedWidth={true} />
+						Add Column
+					</button>
+					<div className="order-1 overflow-auto">
 						<table className="table-auto w-full">
 							<thead className="sticky top-0 bg-white">
 								<tr className="text-left">
 									<th className="text-center">
-										<FontAwesomeIcon icon={faEllipsisVertical} />
+										<FontAwesomeIcon
+											icon={faEllipsisVertical}
+											fixedWidth={true}
+										/>
 										<span className="sr-only">Options</span>
 									</th>
 									<th className="w-1/4">Column Name</th>
@@ -150,10 +160,6 @@ export const ColumnEditor = ({
 							</tbody>
 						</table>
 					</div>
-					<button className="border mt-auto py-2 w-full" onClick={handleOnAdd}>
-						<FontAwesomeIcon icon={faPlus} className="mr-3" />
-						Add Column
-					</button>
 				</div>
 			</div>
 		</section>
