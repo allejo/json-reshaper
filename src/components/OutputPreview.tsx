@@ -73,7 +73,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 				</div>
 			</div>
 			<div className="bg-white grow p-3 rounded overflow-hidden">
-				<div className="max-h-full overflow-auto">
+				<div className="max-h-full h-full overflow-auto">
 					{format === OutputFormat.CSV && (
 						<TransformCSV
 							transformManifest={columnQueries}
