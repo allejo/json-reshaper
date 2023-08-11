@@ -8,7 +8,7 @@ type Props = IOutputComponentProps;
 /**
  * @see https://stackoverflow.com/a/68146412
  */
-function arrayToCsv(data: Array<Array<unknown>>): string {
+function arrayToCsv(data: Array<Array<string>>): string {
 	return data
 		.map(
 			(row) =>
@@ -30,33 +30,42 @@ export const TransformCSV = ({
 		() => Object.values(transformManifest),
 		[transformManifest],
 	);
-	const [processed, setProcessed] = useState<Array<Array<unknown>>>([]);
+	const [processed, setProcessed] = useState<Array<Array<string>>>([]);
 
-	const generatedCSV = useMemo(() => arrayToCsv(processed), [processed]);
+	const generatedCSV = useMemo(
+		() => arrayToCsv([manifest.map((c) => c.name), ...processed]),
+		[manifest, processed],
+	);
 	const exportToCsv = useCallback(() => generatedCSV, [generatedCSV]);
 
 	useEffect(() => {
-		const result: Array<Array<unknown>> = [manifest.map((c) => c.name)];
+		if (manifest.length === 0) {
+			setProcessed([]);
+			return;
+		}
+
+		const result: Array<Array<string>> = [];
 
 		for (const jsonElement of filteredJson) {
-			const row: Array<unknown> = [];
+			const row: Array<string> = [];
 
 			for (const columnDefinition of manifest) {
-				const query = columnDefinition.query;
+				const { name, query } = columnDefinition;
 
-				if (query.trim() === '') {
-					row.push('');
+				if (name.trim() === '' && query.trim() === '') {
 					continue;
 				}
 
 				try {
-					row.push(applyJMESPath(jsonElement, query));
+					row.push(applyJMESPath(jsonElement, query) || 'null');
 				} catch {
-					row.push(null);
+					row.push('');
 				}
 			}
 
-			result.push(row);
+			if (row.length > 0) {
+				result.push(row);
+			}
 		}
 
 		setProcessed(result);
@@ -66,26 +75,34 @@ export const TransformCSV = ({
 		onTransformerMount(exportToCsv);
 	}, [exportToCsv, onTransformerMount]);
 
+	if (processed.length <= 1) {
+		return (
+			<div className="flex h-full">
+				<p className="m-auto text-3xl text-gray-400">Nothing to preview yet!</p>
+			</div>
+		);
+	}
+
 	return (
-		<div className="bg-white rounded">
-			<table className="min-w-full">
-				<thead>
-					<tr className="text-left">
-						{manifest.map((column) => (
+		<table className="table-auto whitespace-nowrap">
+			<thead className="sticky top-0 bg-white">
+				<tr className="text-left">
+					{manifest.map((column) =>
+						column.name.trim() === '' ? null : (
 							<th key={column.uuid}>{column.name}</th>
+						),
+					)}
+				</tr>
+			</thead>
+			<tbody>
+				{processed.map((row, rowIndex) => (
+					<tr key={rowIndex}>
+						{row.map((cell, cellIndex) => (
+							<td key={cellIndex}>{String(cell)}</td>
 						))}
 					</tr>
-				</thead>
-				<tbody>
-					{processed.map((row, rowIndex) => (
-						<tr key={rowIndex}>
-							{row.map((cell, cellIndex) => (
-								<td key={cellIndex}>{String(cell)}</td>
-							))}
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+				))}
+			</tbody>
+		</table>
 	);
 };

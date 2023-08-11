@@ -21,6 +21,6 @@ export interface IOutputComponentProps {
 }
 
 export type JsonObject = Record<symbol, unknown>;
-export type FilteredJson = JsonObject[];
+export type FilteredJson = (null | number | boolean | string | JsonObject)[];
 
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;

@@ -48,9 +48,9 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	}, []);
 
 	return (
-		<section>
+		<section className="flex flex-col">
 			<p className="font-bold mb-2">Output Preview</p>
-			<div className="bg-white border flex grow rounded mb-4 p-3">
+			<div className="bg-white border flex rounded mb-4 p-3">
 				<div>
 					<label className="inline-block font-bold mr-3" htmlFor="format">
 						Format
@@ -72,13 +72,17 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 					</button>
 				</div>
 			</div>
-			{format === OutputFormat.CSV && (
-				<TransformCSV
-					transformManifest={columnQueries}
-					filteredJson={filteredJson}
-					onTransformerMount={handleTransformerMount}
-				/>
-			)}
+			<div className="bg-white grow p-3 rounded overflow-hidden">
+				<div className="max-h-full overflow-auto">
+					{format === OutputFormat.CSV && (
+						<TransformCSV
+							transformManifest={columnQueries}
+							filteredJson={filteredJson}
+							onTransformerMount={handleTransformerMount}
+						/>
+					)}
+				</div>
+			</div>
 		</section>
 	);
 };
