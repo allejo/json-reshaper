@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import './App.css';
 import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
 import { FilteredJson, TransformManifest } from './contracts.ts';
+
+import './App.css';
 
 function App() {
 	const [filteredJson, setFilteredJson] = useState<FilteredJson>([]);
