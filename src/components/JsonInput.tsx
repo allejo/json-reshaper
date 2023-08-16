@@ -92,7 +92,10 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 		}
 
 		try {
-			const filtered = applyJMESPath(parsedJson, debouncedJmesPath);
+			const filtered = applyJMESPath<FilteredJson>(
+				parsedJson,
+				debouncedJmesPath,
+			);
 
 			if (Array.isArray(filtered)) {
 				onJsonFiltered(filtered);
