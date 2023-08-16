@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { JsonObject } from 'type-fest';
 
 export type UUIDv4 = ReturnType<typeof crypto.randomUUID>;
 
@@ -35,12 +36,6 @@ export interface IOutputComponentProps {
 	transformManifest: TransformManifest;
 }
 
-/**
- * Any type that is not a function.
- */
-export type NotFunction<T = any> = T extends Function ? never : T; // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
-
-export type JsonObject<T = never> = Record<symbol, NotFunction<T>>;
 export type FilteredJson = JsonObject[];
 
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;
