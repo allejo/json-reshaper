@@ -106,8 +106,8 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 
 	return (
 		<form className="screen-half grid-rows-left-sidebar" spellCheck={false}>
-			<div className="flex flex-col">
-				<label className="font-bold" htmlFor="from-json">
+			<div className="flex flex-col gap-2">
+				<label className="font-bold m-0" htmlFor="from-json">
 					From JSON
 				</label>
 				<textarea
@@ -120,16 +120,16 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 				/>
 				{rawJsonError && <p className="text-red-800">{rawJsonError}</p>}
 			</div>
-			<div className="flex flex-col">
-				<label className="font-bold" htmlFor="jq-filter">
+			<div className="flex flex-col gap-2">
+				<label className="font-bold m-0" htmlFor="jq-filter">
 					<a href="https://jmespath.org/tutorial.html">JMESPath</a>
 				</label>
 				<input type="text" id="jq-filter" onChange={handleJmesPathOnChange} />
 				{jmesPathError && <p className="text-red-800">{jmesPathError}</p>}
 			</div>
-			<div className="flex flex-col">
-				<p className="font-bold mb-2">Filtered JSON</p>
-				<div className="bg-slate-700 grow overflow-auto rounded">
+			<div className="flex flex-col gap-2">
+				<p className="font-bold m-0">Filtered JSON</p>
+				<div className="bg-slate-700 grow overflow-auto rounded h-0">
 					<pre className="h-full m-0 p-3 text-white max-w-0">
 						{JSON.stringify(filteredJson, null, '\t')}
 					</pre>
