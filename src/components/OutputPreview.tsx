@@ -49,7 +49,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	}, []);
 
 	return (
-		<section className="flex flex-col">
+		<section className="flex flex-col min-w-0">
 			<p className="font-bold mb-2">Output Preview</p>
 			<div className="bg-white border flex rounded mb-4 p-3">
 				<div>
@@ -73,7 +73,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 					</button>
 				</div>
 			</div>
-			<div className="bg-white grow p-3 rounded overflow-hidden">
+			<div className="bg-white grow p-3 rounded overflow-hidden h-0">
 				<div className="max-h-full h-full overflow-auto">
 					{format === OutputFormat.CSV && (
 						<TransformCSV
