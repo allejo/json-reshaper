@@ -4,7 +4,9 @@ import { useCallback, useMemo } from 'react';
 
 import {
 	ColumnType,
+	DateColumn,
 	StateSetter,
+	StringColumn,
 	TransformManifest,
 	UUIDv4,
 } from '../contracts.ts';
@@ -50,13 +52,35 @@ export const ColumnEditor = ({
 	);
 	const handleOnEdit = useCallback(
 		(uuid: UUIDv4, name: string, value: string) => {
-			onManifestChange((prevManifest) => ({
-				...prevManifest,
-				[uuid]: {
-					...prevManifest[uuid],
-					[name]: value,
-				},
-			}));
+			onManifestChange((prevManifest) => {
+				const updatedManifest: TransformManifest = {
+					...prevManifest,
+					[uuid]: {
+						...prevManifest[uuid],
+						[name]: value,
+					},
+				};
+
+				if (name === 'type') {
+					if (value === ColumnType.String) {
+						const target = updatedManifest[uuid] as StringColumn;
+
+						if ('fromFormat' in target) {
+							delete target.fromFormat;
+						}
+						if ('toFormat' in target) {
+							delete target.toFormat;
+						}
+					} else if (value === ColumnType.Date) {
+						const target = updatedManifest[uuid] as DateColumn;
+
+						target.fromFormat = '';
+						target.toFormat = '';
+					}
+				}
+
+				return updatedManifest;
+			});
 		},
 		[onManifestChange],
 	);
