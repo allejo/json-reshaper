@@ -52,8 +52,11 @@ export function applyReshapeTransformation<
 				} else if (type === ColumnType.Date) {
 					let date: dayjs.Dayjs;
 
-					if (columnDefinition.fromFormat === 'unix') {
-						date = dayjs.unix(Number(pathResult));
+					if (
+						columnDefinition.fromFormat === 'unix' &&
+						typeof pathResult === 'number'
+					) {
+						date = dayjs.unix(pathResult);
 					} else {
 						date = dayjs(String(pathResult), columnDefinition.fromFormat);
 					}
@@ -64,6 +67,8 @@ export function applyReshapeTransformation<
 						} else {
 							value = date.format(columnDefinition.toFormat) as R;
 						}
+					} else {
+						value = pathResult as R;
 					}
 				} else if (type === ColumnType.String) {
 					value = pathResult as R;

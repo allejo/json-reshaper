@@ -1,7 +1,7 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { ChangeEvent, useCallback } from 'react';
 
 import {
 	ColumnDefinition,
@@ -9,7 +9,6 @@ import {
 	FormFieldType,
 	UUIDv4,
 } from '../contracts.ts';
-import { useFormField } from '../hooks/useFormField.ts';
 
 interface Props {
 	uuid: UUIDv4;
@@ -19,9 +18,6 @@ interface Props {
 }
 
 export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
-	const [dateFormatFrom, setDateFormatFrom] = useState('');
-	const [dateFormatTo, setDateFormatTo] = useState('');
-
 	const slugifyInputId = useCallback(
 		(columnName: string) => `${kebabCase(columnName)}-${uuid}`,
 		[uuid],
@@ -35,9 +31,6 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 	const handleOnDelete = useCallback(() => {
 		onDelete(uuid);
 	}, [onDelete, uuid]);
-
-	const [handleOnDateFormatFrom] = useFormField(setDateFormatFrom);
-	const [handleOnDateFormatTo] = useFormField(setDateFormatTo);
 
 	const colNameId = slugifyInputId('Column Name');
 	const colTypeId = slugifyInputId('Column Type');
@@ -98,8 +91,8 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 								type="text"
 								id={colDateFrom}
 								placeholder="e.g. 'unix'"
-								onChange={handleOnDateFormatFrom}
-								value={dateFormatFrom}
+								onChange={handleOnChange('fromFormat')}
+								value={column.fromFormat}
 							/>
 						</div>
 						<div>
@@ -110,8 +103,8 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 								type="text"
 								id={colDateTo}
 								placeholder="e.g. YYYY-MM-DD"
-								onChange={handleOnDateFormatTo}
-								value={dateFormatTo}
+								onChange={handleOnChange('toFormat')}
+								value={column.toFormat}
 							/>
 						</div>
 					</div>
