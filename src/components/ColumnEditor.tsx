@@ -1,71 +1,14 @@
-import {
-	faEllipsisVertical,
-	faPlus,
-	faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ChangeEvent, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
-	ColumnDefinition,
+	ColumnType,
 	StateSetter,
 	TransformManifest,
 	UUIDv4,
 } from '../contracts.ts';
-
-interface ColumnEntryProps {
-	uuid: UUIDv4;
-	column: ColumnDefinition;
-	onChange: (uuid: UUIDv4, name: string, value: string) => void;
-	onDelete: (uuid: UUIDv4) => void;
-}
-
-const ColumnEntry = ({
-	column,
-	uuid,
-	onChange,
-	onDelete,
-}: ColumnEntryProps) => {
-	const handleOnChange = useCallback(
-		(key: string) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-			onChange(uuid, key, e.currentTarget.value);
-		},
-		[onChange, uuid],
-	);
-	const handleOnDelete = useCallback(() => {
-		onDelete(uuid);
-	}, [onDelete, uuid]);
-
-	return (
-		<tr>
-			<td>
-				<button onClick={handleOnDelete}>
-					<FontAwesomeIcon icon={faTrash} />
-					<span className="sr-only">Delete</span>
-				</button>
-			</td>
-			<td>
-				<input
-					type="text"
-					onChange={handleOnChange('name')}
-					value={column.name}
-				/>
-			</td>
-			<td className="text-center">
-				<select onChange={handleOnChange('type')} value={column.type}>
-					<option>{column.type}</option>
-				</select>
-			</td>
-			<td>
-				<input
-					type="text"
-					onChange={handleOnChange('query')}
-					value={column.query}
-				/>
-			</td>
-		</tr>
-	);
-};
+import { ColumnEntry } from './ColumnEntry.tsx';
 
 interface Props {
 	transformManifest: TransformManifest;
@@ -89,7 +32,7 @@ export const ColumnEditor = ({
 			[uuid]: {
 				uuid,
 				name: '',
-				type: 'string',
+				type: ColumnType.String,
 				query: '',
 			},
 		}));

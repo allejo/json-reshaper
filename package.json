@@ -8,7 +8,8 @@
 		"dev": "vite",
 		"format": "prettier --write .",
 		"lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"test": "jest src"
 	},
 	"prettier": "@allejo/prettier-config",
 	"dependencies": {
@@ -20,6 +21,7 @@
 		"@types/jmespath": "^0.15.0",
 		"@types/lodash": "^4.14.196",
 		"autoprefixer": "^10.4.14",
+		"dayjs": "^1.11.9",
 		"jmespath": "^0.16.0",
 		"lodash": "^4.17.21",
 		"postcss": "^8.4.27",
@@ -28,10 +30,12 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"tailwindcss": "^3.3.3",
+		"type-fest": "^4.2.0",
 		"usehooks-ts": "^2.9.1"
 	},
 	"devDependencies": {
 		"@allejo/prettier-config": "^1.0.2",
+		"@types/jest": "^29.5.3",
 		"@types/react": "^18.2.14",
 		"@types/react-dom": "^18.2.6",
 		"@typescript-eslint/eslint-plugin": "^5.61.0",
@@ -40,7 +44,9 @@
 		"eslint": "^8.44.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.1",
+		"jest": "^29.6.2",
 		"prettier": "^3.0.1",
+		"ts-jest": "^29.1.1",
 		"typescript": "^5.0.2",
 		"vite": "^4.4.0"
 	}

@@ -5,9 +5,10 @@ import {
 	useEffect,
 	useState,
 } from 'react';
+import { JsonObject } from 'type-fest';
 import { useDebounce } from 'usehooks-ts';
 
-import { FilteredJson, JsonObject } from '../contracts.ts';
+import { FilteredJson } from '../contracts.ts';
 import { applyJMESPath, DisableGrammarlyProps } from '../utilities.ts';
 
 function tryParseJson(json: string): JsonObject {
@@ -95,7 +96,7 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 			const filtered = applyJMESPath(parsedJson, debouncedJmesPath);
 
 			if (Array.isArray(filtered)) {
-				onJsonFiltered(filtered);
+				onJsonFiltered(filtered as JsonObject[]);
 			}
 		} catch (e) {
 			if (e instanceof Error) {
