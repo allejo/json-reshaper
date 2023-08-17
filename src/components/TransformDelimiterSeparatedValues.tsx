@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { IOutputComponentProps } from '../contracts.ts';
-import { applyReshapeTransformation } from '../utilities.ts';
+import { applyReshapeTransformationArray } from '../utilities.ts';
 
-type Props = IOutputComponentProps;
+interface Props extends IOutputComponentProps {
+	delimiter: string;
+}
 
 /**
  * @see https://stackoverflow.com/a/68146412
  */
-function arrayToCsv(data: Array<Array<string>>): string {
+function arrayToDsv(data: Array<Array<string>>, delimiter = ','): string {
 	return data
 		.map(
 			(row) =>
@@ -16,12 +18,13 @@ function arrayToCsv(data: Array<Array<string>>): string {
 					.map(String) // convert every value to String
 					.map((v) => v.replaceAll('"', '""')) // escape double colons
 					.map((v) => `"${v}"`) // quote it
-					.join(','), // comma-separated
+					.join(delimiter), // comma-separated
 		)
 		.join('\r\n'); // rows starting on new lines
 }
 
-export const TransformCSV = ({
+export const TransformDelimiterSeparatedValues = ({
+	delimiter,
 	transformManifest,
 	filteredJson,
 	onTransformerMount,
@@ -32,11 +35,11 @@ export const TransformCSV = ({
 	);
 	const [processed, setProcessed] = useState<Array<Array<string>>>([]);
 
-	const generatedCSV = useMemo(
-		() => arrayToCsv([manifest.map((c) => c.name), ...processed]),
-		[manifest, processed],
+	const generatedDSV = useMemo(
+		() => arrayToDsv([manifest.map((c) => c.name), ...processed], delimiter),
+		[delimiter, manifest, processed],
 	);
-	const exportToCsv = useCallback(() => generatedCSV, [generatedCSV]);
+	const exportToDsv = useCallback(() => generatedDSV, [generatedDSV]);
 
 	useEffect(() => {
 		if (manifest.length === 0) {
@@ -44,19 +47,12 @@ export const TransformCSV = ({
 			return;
 		}
 
-		setProcessed(
-			applyReshapeTransformation(
-				filteredJson,
-				manifest,
-				() => [],
-				(col, value) => col.push(value),
-			),
-		);
+		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
 	}, [transformManifest, filteredJson, manifest]);
 
 	useEffect(() => {
-		onTransformerMount(exportToCsv);
-	}, [exportToCsv, onTransformerMount]);
+		onTransformerMount(exportToDsv);
+	}, [exportToDsv, onTransformerMount]);
 
 	if (processed.length <= 1) {
 		return (

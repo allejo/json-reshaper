@@ -6,10 +6,11 @@ import {
 	TransformerMountFxn,
 	TransformManifest,
 } from '../contracts.ts';
-import { TransformCSV } from './TransformCSV.tsx';
+import { TransformDelimiterSeparatedValues } from './TransformDelimiterSeparatedValues.tsx';
 
 enum OutputFormat {
 	CSV = 'csv',
+	TSV = 'tsv',
 }
 
 interface Props {
@@ -75,8 +76,9 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 			</div>
 			<div className="bg-white grow p-3 rounded overflow-hidden h-0">
 				<div className="max-h-full h-full overflow-auto">
-					{format === OutputFormat.CSV && (
-						<TransformCSV
+					{[OutputFormat.CSV, OutputFormat.TSV].includes(format) && (
+						<TransformDelimiterSeparatedValues
+							delimiter={format === OutputFormat.CSV ? ',' : '\t'}
 							transformManifest={columnQueries}
 							filteredJson={filteredJson}
 							onTransformerMount={handleTransformerMount}
