@@ -62,3 +62,7 @@ To get your local development setup so you can test your work, use the following
    ```bash
    npm test
    ```
+
+## License
+
+[AGPL v3](/LICENSE)
