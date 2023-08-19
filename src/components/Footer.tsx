@@ -1,5 +1,5 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faBug, faHeart, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const links = [
@@ -10,10 +10,20 @@ const links = [
 		icon: faGithub,
 	},
 	{
+		href: 'https://github.com/allejo/json-reshaper/issues',
+		text: 'Report a bug',
+		icon: faBug,
+	},
+	{
 		href: 'https://github.com/sponsors/allejo',
 		text: 'Sponsor',
 		icon: faHeart,
 		iconClass: 'text-red-500',
+	},
+	{
+		href: 'https://github.com/allejo/json-reshaper#how-to-use-json-reshaper',
+		text: 'Help',
+		icon: faQuestion,
 	},
 ];
 
@@ -28,7 +38,7 @@ export const Footer = () => (
 					key={index}
 					href={href}
 					target="_blank"
-					className="inline-block ml-4 font-bold text-slate-800 underline cursor-pointer"
+					className="cursor-pointer font-bold inline-block ml-4 text-slate-800 underline"
 				>
 					{icon && (
 						<FontAwesomeIcon
