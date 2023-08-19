@@ -52,14 +52,15 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	return (
 		<section className="flex flex-col min-w-0">
 			<p className="font-bold mb-2">Output Preview</p>
-			<div className="bg-white border flex rounded mb-4 p-3">
-				<div>
-					<label className="inline-block font-bold mr-3" htmlFor="format">
+			<div className="bg-white border flex rounded mb-4 p-3 ">
+				<div className="items-center">
+					<label className="inline-block font-bold mr-3 mb-0" htmlFor="format">
 						Format
 					</label>
+
 					<select
 						id="format"
-						className="w-auto"
+						className="w-auto mb-0"
 						value={format}
 						onChange={handleFormatOnChange}
 					>
