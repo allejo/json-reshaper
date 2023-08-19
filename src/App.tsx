@@ -4,6 +4,7 @@ import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
+import { ToasterProvider } from './components/ToasterProvider.tsx';
 import { FilteredJson, TransformManifest } from './contracts.ts';
 
 import './App.css';
@@ -14,6 +15,7 @@ function App() {
 
 	return (
 		<div className="container h-screen max-h-screen mx-auto">
+			<ToasterProvider />
 			<div className="grid grid-rows-[min-content_minmax(0,_1fr)_min-content] gap-4 p-4 h-full">
 				<div />
 				<div className="grid grid-cols-2 gap-4">
