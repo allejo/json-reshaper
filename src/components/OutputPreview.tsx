@@ -17,6 +17,10 @@ interface Props {
 	columnQueries: TransformManifest;
 	filteredJson: FilteredJson;
 }
+const MimeType: Record<OutputFormat, string> = {
+	[OutputFormat.CSV]: 'text/csv',
+	[OutputFormat.TSV]: 'text/tab-seprated-values' 
+}
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
@@ -52,11 +56,9 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 
 	const handleDownload = useCallback(()=>{		
 		const transformedText = getTransformedAsText.current();
-		let type = OutputFormat.CSV;
-		if(format === OutputFormat.TSV)
-			type = OutputFormat.TSV
-		let data = new Blob([transformedText], {type:`text/${type}`});
-		let url = window.URL.createObjectURL(data);
+		const type = MimeType[format];
+		const data = new Blob([transformedText],{type});
+		const url = window.URL.createObjectURL(data);
 		setFileLink(url);
 	}, [format])
 
@@ -83,7 +85,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 					<button className="border py-1 px-2" onClick={handleCopyEvent}>
 						Copy as {format.toUpperCase()}
 					</button>
-					<a download='JSONReshaperdata' href={fileLink} className="border py-1 px-2" onClick={handleDownload}>
+					<a download={`json-reshaper.${format}`} href={fileLink} className="border py-1 px-2" onClick={handleDownload}>
 						Download {format.toUpperCase()}
 					</a>
 				</div>
