@@ -22,7 +22,7 @@ interface Props {
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
-	const [value, copy] = useCopyToClipboard();
+	const [, copy] = useCopyToClipboard();
 	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
 		throw new Error('Transformer not mounted');
 	});
@@ -46,8 +46,8 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 			.then(() => {
 				toast.success('Copied to clipboard');
 			})
-			.catch((err) => {
-				console.error(err);
+			.catch((err: { message: string }) => {
+				toast.error(err.message);
 			});
 	}, [copy]);
 
