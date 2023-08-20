@@ -2,6 +2,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
 import { ChangeEvent, useCallback } from 'react';
+import { KeyboardEvent } from 'react';
 
 import {
 	ColumnDefinition,
@@ -39,7 +40,7 @@ export const ColumnEntry = ({
 		onDelete(uuid);
 	}, [onDelete, uuid]);
 
-	const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key === 'Enter') {
 			e.preventDefault();
 			onEnter();
