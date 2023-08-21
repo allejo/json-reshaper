@@ -17,9 +17,14 @@ interface Props {
 	columnQueries: TransformManifest;
 	filteredJson: FilteredJson;
 }
+const MimeType: Record<OutputFormat, string> = {
+	[OutputFormat.CSV]: 'text/csv',
+	[OutputFormat.TSV]: 'text/tab-seprated-values' 
+}
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
+	const [fileLink, setFileLink] = useState<string>('');
 	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
 		throw new Error('Transformer not mounted');
 	});
@@ -49,6 +54,14 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 			});
 	}, []);
 
+	const handleDownload = useCallback(()=>{		
+		const transformedText = getTransformedAsText.current();
+		const type = MimeType[format];
+		const data = new Blob([transformedText],{type});
+		const url = window.URL.createObjectURL(data);
+		setFileLink(url);
+	}, [format])
+
 	return (
 		<section className="flex flex-col min-w-0">
 			<p className="font-bold mb-2">Output Preview</p>
@@ -68,10 +81,13 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 						))}
 					</select>
 				</div>
-				<div className="ml-auto">
+				<div className="ml-auto flex gap-2">
 					<button className="border py-1 px-2" onClick={handleCopyEvent}>
 						Copy as {format.toUpperCase()}
 					</button>
+					<a download={`json-reshaper.${format}`} href={fileLink} className="border py-1 px-2" onClick={handleDownload}>
+						Download {format.toUpperCase()}
+					</a>
 				</div>
 			</div>
 			<div className="bg-white grow p-3 rounded overflow-hidden h-0">
