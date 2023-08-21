@@ -1,4 +1,6 @@
 import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useCopyToClipboard } from 'usehooks-ts';
 
 import {
 	DataTransformerFxn,
@@ -24,6 +26,7 @@ const MimeType: Record<OutputFormat, string> = {
 
 export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
+	const [, copy] = useCopyToClipboard();
 	const [fileLink, setFileLink] = useState<string>('');
 	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
 		throw new Error('Transformer not mounted');
@@ -44,15 +47,14 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const handleCopyEvent = useCallback(() => {
 		const transformedText = getTransformedAsText.current();
 
-		navigator.clipboard
-			.writeText(transformedText)
+		copy(transformedText)
 			.then(() => {
-				console.log('Copied to clipboard');
+				toast.success('Copied to clipboard');
 			})
-			.catch((err) => {
-				console.error(err);
+			.catch((err: { message: string }) => {
+				toast.error(err.message);
 			});
-	}, []);
+	}, [copy]);
 
 	const handleDownload = useCallback(()=>{		
 		const transformedText = getTransformedAsText.current();
