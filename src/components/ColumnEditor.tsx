@@ -122,6 +122,7 @@ export const ColumnEditor = ({
 										uuid={column.uuid}
 										onChange={handleOnEdit}
 										onDelete={handleOnDelete}
+										onEnter={handleOnAdd}
 									/>
 								))}
 							</tbody>

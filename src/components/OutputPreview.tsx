@@ -70,9 +70,10 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 					<label className="inline-block font-bold mr-3 my-0" htmlFor="format">
 						Format
 					</label>
+
 					<select
 						id="format"
-						className="w-auto"
+						className="w-auto mb-0"
 						value={format}
 						onChange={handleFormatOnChange}
 					>

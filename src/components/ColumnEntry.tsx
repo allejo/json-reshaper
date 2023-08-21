@@ -1,7 +1,7 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, KeyboardEvent, useCallback } from 'react';
 
 import {
 	ColumnDefinition,
@@ -15,9 +15,16 @@ interface Props {
 	column: ColumnDefinition;
 	onChange: (uuid: UUIDv4, name: string, value: string) => void;
 	onDelete: (uuid: UUIDv4) => void;
+	onEnter: () => void;
 }
 
-export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
+export const ColumnEntry = ({
+	column,
+	uuid,
+	onChange,
+	onDelete,
+	onEnter,
+}: Props) => {
 	const slugifyInputId = useCallback(
 		(columnName: string) => `${kebabCase(columnName)}-${uuid}`,
 		[uuid],
@@ -31,6 +38,13 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 	const handleOnDelete = useCallback(() => {
 		onDelete(uuid);
 	}, [onDelete, uuid]);
+
+	const handleKeyPress = (e: KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			e.preventDefault();
+			onEnter();
+		}
+	};
 
 	const colNameId = slugifyInputId('Column Name');
 	const colTypeId = slugifyInputId('Column Type');
@@ -55,6 +69,7 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 					id={colNameId}
 					onChange={handleOnChange('name')}
 					value={column.name}
+					onKeyDown={handleKeyPress}
 				/>
 			</td>
 			<td className="align-top text-center">
@@ -80,6 +95,7 @@ export const ColumnEntry = ({ column, uuid, onChange, onDelete }: Props) => {
 					id={colQueryId}
 					onChange={handleOnChange('query')}
 					value={column.query}
+					onKeyDown={handleKeyPress}
 				/>
 				{column.type === ColumnType.Date && (
 					<div className="flex gap-2 mt-4 pl-4">
