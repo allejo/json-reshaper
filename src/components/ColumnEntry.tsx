@@ -1,8 +1,7 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
-import { ChangeEvent, useCallback } from 'react';
-import { KeyboardEvent } from 'react';
+import { ChangeEvent, KeyboardEvent, useCallback } from 'react';
 
 import {
 	ColumnDefinition,
