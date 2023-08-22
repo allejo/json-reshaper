@@ -5,6 +5,7 @@ import { applyReshapeTransformationArray } from '../utilities.ts';
 
 interface Props extends IOutputComponentProps {
 	delimiter: string;
+	setIsDisabled:React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -28,6 +29,7 @@ export const TransformDelimiterSeparatedValues = ({
 	transformManifest,
 	filteredJson,
 	onTransformerMount,
+	setIsDisabled,
 }: Props) => {
 	const manifest = useMemo(
 		() => Object.values(transformManifest),
@@ -46,7 +48,7 @@ export const TransformDelimiterSeparatedValues = ({
 			setProcessed([]);
 			return;
 		}
-
+		setIsDisabled(false);
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
 	}, [transformManifest, filteredJson, manifest]);
 

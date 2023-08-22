@@ -28,6 +28,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
 	const [, copy] = useCopyToClipboard();
 	const [fileLink, setFileLink] = useState<string>('');
+	const [isDisabled, setIsDisabled] = useState<boolean>(true);
 	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
 		throw new Error('Transformer not mounted');
 	});
@@ -85,17 +86,17 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 					</select>
 				</div>
 				<div className="ml-auto flex gap-2">
-					<button className="border py-1 px-2" onClick={handleCopyEvent}>
+					<button className="border py-1 px-2" onClick={handleCopyEvent} disabled={isDisabled}>
 						Copy as {format.toUpperCase()}
 					</button>
-					<a
+					{!isDisabled && <a
 						download={`json-reshaper.${format}`}
 						href={fileLink}
 						className="border py-1 px-2"
 						onClick={handleDownload}
 					>
 						Download {format.toUpperCase()}
-					</a>
+					</a>}
 				</div>
 			</div>
 			<div className="bg-white grow p-3 rounded overflow-hidden h-0">
@@ -106,6 +107,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 							transformManifest={columnQueries}
 							filteredJson={filteredJson}
 							onTransformerMount={handleTransformerMount}
+							setIsDisabled  = {setIsDisabled}
 						/>
 					)}
 				</div>
