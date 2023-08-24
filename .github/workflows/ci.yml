@@ -1,0 +1,90 @@
+name: Continuous Integration
+on:
+  push: ~
+  pull_request_target: ~
+
+jobs:
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Code
+
+      - uses: actions/setup-node@v3
+        name: Setup Node
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Compile Production Build
+        run: |
+          npm run build
+
+  formatting:
+    name: Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Code
+
+      - uses: actions/setup-node@v3
+        name: Setup Node
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Format Code
+        run: |
+          npm run format
+          git diff --exit-code
+
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Code
+
+      - uses: actions/setup-node@v3
+        name: Setup Node
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Check ESLint rules
+        run: |
+          npm run lint
+
+  unit-tests:
+    name: Unit testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Code
+
+      - uses: actions/setup-node@v3
+        name: Setup Node
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Run tests
+        run: |
+          npm test

@@ -21,6 +21,7 @@
 		"@react-hooks-library/core": "^0.5.1",
 		"@types/jmespath": "^0.15.0",
 		"@types/lodash": "^4.14.196",
+		"@types/node": "^20.5.4",
 		"autoprefixer": "^10.4.14",
 		"dayjs": "^1.11.9",
 		"jmespath": "^0.16.0",
