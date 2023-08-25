@@ -5,6 +5,7 @@ import { applyReshapeTransformationArray } from '../utilities.ts';
 
 interface Props extends IOutputComponentProps {
 	delimiter: string;
+	setShowButtons:React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 /**

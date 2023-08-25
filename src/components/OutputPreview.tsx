@@ -28,7 +28,7 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
 	const [, copy] = useCopyToClipboard();
 	const [fileLink, setFileLink] = useState<string>('');
-	const [showButtons, setShowButtons] = useState(false);
+	const [showButtons, setShowButtons] = useState<boolean>(false);
 	const getTransformedAsText = useRef<DataTransformerFxn>(() => {
 		throw new Error('Transformer not mounted');
 	});
