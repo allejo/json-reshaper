@@ -28,6 +28,7 @@ export const TransformDelimiterSeparatedValues = ({
 	transformManifest,
 	filteredJson,
 	onTransformerMount,
+	setShowButtons,
 }: Props) => {
 	const manifest = useMemo(
 		() => Object.values(transformManifest),
@@ -44,9 +45,10 @@ export const TransformDelimiterSeparatedValues = ({
 	useEffect(() => {
 		if (manifest.length === 0) {
 			setProcessed([]);
+			setShowButtons(false);
 			return;
 		}
-
+		setShowButtons(true);
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
 	}, [transformManifest, filteredJson, manifest]);
 
