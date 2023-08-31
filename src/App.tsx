@@ -6,6 +6,7 @@ import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
+import { Toolbar } from './components/Toolbar.tsx';
 import {
 	DocumentContext,
 	createReShaperDocument,
@@ -33,7 +34,7 @@ function App() {
 			<div className="container h-screen max-h-screen mx-auto">
 				<Toaster />
 				<div className="grid grid-rows-[min-content_minmax(0,_1fr)_min-content] gap-4 p-4 h-full">
-					<div />
+					<Toolbar />
 					<div className="grid grid-cols-2 gap-4">
 						<JsonInput
 							filteredJson={filteredJson}
