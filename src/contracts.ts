@@ -43,3 +43,10 @@ export type FormFieldType =
 	| HTMLInputElement
 	| HTMLSelectElement
 	| HTMLTextAreaElement;
+
+export enum ButtonType {
+	None,
+	Plain,
+	Action,
+	Danger,
+}
