@@ -5,15 +5,11 @@ import { useCopyToClipboard } from 'usehooks-ts';
 import {
 	DataTransformerFxn,
 	FilteredJson,
+	OutputFormat,
 	TransformerMountFxn,
 	TransformManifest,
 } from '../contracts.ts';
 import { TransformDelimiterSeparatedValues } from './TransformDelimiterSeparatedValues.tsx';
-
-enum OutputFormat {
-	CSV = 'csv',
-	TSV = 'tsv',
-}
 
 interface Props {
 	columnQueries: TransformManifest;

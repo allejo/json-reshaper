@@ -44,6 +44,11 @@ export type FormFieldType =
 	| HTMLSelectElement
 	| HTMLTextAreaElement;
 
+export enum OutputFormat {
+	CSV = 'csv',
+	TSV = 'tsv',
+}
+
 export enum ButtonType {
 	None,
 	Plain,
