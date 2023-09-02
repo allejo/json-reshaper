@@ -43,13 +43,15 @@ export const TransformDelimiterSeparatedValues = ({
 	);
 	const exportToDsv = useCallback(() => generatedDSV, [generatedDSV]);
 
+	useEffect(()=>{
+		setShowButtons(()=>processed.length>1);
+	}, [processed]);
+
 	useEffect(() => {
 		if (manifest.length === 0) {
-			setProcessed([]);
 			setShowButtons(false);
 			return;
 		}
-		setShowButtons(true);
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
 	}, [transformManifest, filteredJson, manifest]);
 
