@@ -42,7 +42,13 @@ export const Button = ({
 				className,
 			])}
 		>
-			{icon && <FontAwesomeIcon icon={icon} fixedWidth />}
+			{icon && (
+				<FontAwesomeIcon
+					icon={icon}
+					fixedWidth
+					className={classList([['mr-1', !iconOnly]])}
+				/>
+			)}
 			{iconOnly ? <span className="sr-only">{children}</span> : children}
 		</button>
 	);

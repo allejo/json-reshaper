@@ -1,5 +1,6 @@
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { useCallback, useContext } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { ReShaperDocument } from '../../ReShaperDocument.js';
 import { DocumentContext } from '../../contexts.ts';
@@ -20,14 +21,15 @@ export const SaveButton = () => {
 		qParams.set('d', base64);
 
 		window.location.hash = qParams.toString();
+		toast.success('Bookmark or share the updated URL');
 	}, [docContext.document]);
 
 	return (
 		<Button
-			type={ButtonType.None}
+			type={ButtonType.Action}
 			icon={faSave}
-			iconOnly
 			onClick={handleOnClick}
+			rounded
 		>
 			Save
 		</Button>
