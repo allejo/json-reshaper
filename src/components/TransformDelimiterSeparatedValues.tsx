@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IOutputComponentProps } from '../contracts.ts';
+import { IOutputComponentProps, StateSetter } from '../contracts.ts';
 import { applyReshapeTransformationArray } from '../utilities.ts';
 
 interface Props extends IOutputComponentProps {
 	delimiter: string;
+	setShowButtons: StateSetter<boolean>;
 }
 
 /**
@@ -28,6 +29,7 @@ export const TransformDelimiterSeparatedValues = ({
 	transformManifest,
 	filteredJson,
 	onTransformerMount,
+	setShowButtons,
 }: Props) => {
 	const manifest = useMemo(
 		() => Object.values(transformManifest),
@@ -42,11 +44,14 @@ export const TransformDelimiterSeparatedValues = ({
 	const exportToDsv = useCallback(() => generatedDSV, [generatedDSV]);
 
 	useEffect(() => {
+		setShowButtons(processed.length > 1);
+	}, [processed]);
+
+	useEffect(() => {
 		if (manifest.length === 0) {
-			setProcessed([]);
+			setShowButtons(false);
 			return;
 		}
-
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
 	}, [transformManifest, filteredJson, manifest]);
 
