@@ -1,88 +1,68 @@
 import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 
-import {
-	ColumnType,
-	DateColumn,
-	StateSetter,
-	StringColumn,
-	TransformManifest,
-	UUIDv4,
-} from '../contracts.ts';
+import { ColumnType } from '../ReShaperDocument.js';
+import { DocumentContext } from '../contexts.ts';
 import { ColumnEntry } from './ColumnEntry.tsx';
 
-interface Props {
-	transformManifest: TransformManifest;
-	onManifestChange: StateSetter<TransformManifest>;
-}
-
-export const ColumnEditor = ({
-	transformManifest,
-	onManifestChange,
-}: Props) => {
+export const ColumnEditor = () => {
+	const { document, setDocument } = useContext(DocumentContext);
+	const rawManifest = document.manifest;
 	const manifest = useMemo(
-		() => Object.values(transformManifest),
-		[transformManifest],
+		() => Object.values(rawManifest ?? {}),
+		[rawManifest],
 	);
 
 	const handleOnAdd = useCallback(() => {
-		const uuid = crypto.randomUUID();
+		const uuid = Math.random().toString(36).substring(2, 6);
 
-		onManifestChange((prevManifest) => ({
-			...prevManifest,
-			[uuid]: {
+		setDocument((draft) => {
+			draft?.manifest?.push({
 				uuid,
 				name: '',
 				type: ColumnType.String,
 				query: '',
-			},
-		}));
-	}, [onManifestChange]);
+			});
+		});
+	}, [setDocument]);
 	const handleOnDelete = useCallback(
-		(uuid: UUIDv4) => {
-			onManifestChange((prevManifest) => {
-				const newManifest = { ...prevManifest };
-				delete newManifest[uuid];
-
-				return newManifest;
+		(index: number) => {
+			setDocument((draft) => {
+				draft?.manifest?.splice(index, 1);
 			});
 		},
-		[onManifestChange],
+		[setDocument],
 	);
 	const handleOnEdit = useCallback(
-		(uuid: UUIDv4, name: string, value: string) => {
-			onManifestChange((prevManifest) => {
-				const updatedManifest: TransformManifest = {
-					...prevManifest,
-					[uuid]: {
-						...prevManifest[uuid],
-						[name]: value,
-					},
-				};
+		(index: number, name: string, value: number | string) => {
+			setDocument((draft) => {
+				// @ts-expect-error Every field in an IColumnDefinition can have different types (e.g. UUIDv4 vs string)
+				draft.manifest[index][name] = value;
 
 				if (name === 'type') {
 					if (value === ColumnType.String) {
-						const target = updatedManifest[uuid] as StringColumn;
+						const target = draft?.manifest?.[index] ?? {};
 
-						if ('fromFormat' in target) {
-							delete target.fromFormat;
-						}
-						if ('toFormat' in target) {
-							delete target.toFormat;
+						if ('dateConversion' in target) {
+							delete target.dateConversion;
 						}
 					} else if (value === ColumnType.Date) {
-						const target = updatedManifest[uuid] as DateColumn;
+						const target = draft?.manifest?.[index];
 
-						target.fromFormat = '';
-						target.toFormat = '';
+						if (target) {
+							if (!target.dateConversion) {
+								target.dateConversion = {};
+							}
+
+							target.dateConversion.from = '';
+							target.dateConversion.to = '';
+						}
 					}
 				}
-
-				return updatedManifest;
 			});
 		},
-		[onManifestChange],
+		[setDocument],
 	);
 
 	return (
@@ -115,11 +95,11 @@ export const ColumnEditor = ({
 								</tr>
 							</thead>
 							<tbody className="overflow-y-auto">
-								{manifest.map((column) => (
+								{manifest.map((column, i) => (
 									<ColumnEntry
 										key={column.uuid}
 										column={column}
-										uuid={column.uuid}
+										index={i}
 										onChange={handleOnEdit}
 										onDelete={handleOnDelete}
 										onEnter={handleOnAdd}

@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import * as dayjs from 'dayjs';
 import { JsonObject } from 'type-fest';
 
-import { ColumnDefinition, ColumnType } from './contracts.ts';
+import { ColumnType, IColumnDefinition } from './ReShaperDocument.js';
 import { applyReshapeTransformationArray } from './utilities.ts';
 
 describe('Utilities > applyReshapeTransformation', () => {
@@ -22,12 +22,14 @@ describe('Utilities > applyReshapeTransformation', () => {
 		];
 
 		const uuid = randomUUID();
-		const manifest: ColumnDefinition[] = [
+		const manifest: IColumnDefinition[] = [
 			{
 				uuid,
 				type: ColumnType.Date,
-				fromFormat: 'unix',
-				toFormat: 'YYYY-MM-DD',
+				dateConversion: {
+					from: 'unix',
+					to: 'YYYY-MM-DD',
+				},
 				name: 'Date',
 				query: 'timestamp',
 			},

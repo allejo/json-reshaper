@@ -1,8 +1,14 @@
 import { Draft } from 'immer';
-import { SyntheticEvent, useCallback } from 'react';
+import { invert } from 'lodash';
+import { SyntheticEvent, useCallback, useMemo } from 'react';
 
-import { IDocumentContext, ReShaperDocument } from './contexts.ts';
+import { IReShaperDocument } from './ReShaperDocument.js';
+import { IDocumentContext } from './contexts.ts';
 import { FormFieldType, StateSetter } from './contracts.ts';
+
+export function useEnumByName(enum_: object) {
+	return useMemo(() => invert(enum_), [enum_]);
+}
 
 export function useFieldWithState<T extends FormFieldType>(
 	setter: StateSetter<string>,
@@ -16,7 +22,7 @@ export function useFieldWithState<T extends FormFieldType>(
 
 export function useFieldWithContext<T extends FormFieldType>(
 	context: IDocumentContext,
-	recipe: (value: string, draft: Draft<ReShaperDocument>) => void,
+	recipe: (value: string, draft: Draft<IReShaperDocument>) => void,
 ) {
 	return useCallback((event: SyntheticEvent<T>) => {
 		const newValue = event.currentTarget.value;

@@ -10,12 +10,12 @@ export const DocumentName = () => {
 	const docContext = useContext(DocumentContext);
 	const manifestNameID = useId();
 	const [editMode, setEditMode] = useState(false);
-	const [draftName, setDraftName] = useState(docContext.document.name);
+	const [draftName, setDraftName] = useState(docContext.document.name ?? '');
 	const handleManifestNameChange = useFieldWithState(setDraftName);
 
 	const handleEnableEdit = useCallback(() => {
 		setEditMode(true);
-		setDraftName(docContext.document.name);
+		setDraftName(docContext.document.name ?? '');
 	}, [docContext.document.name]);
 	const handleCancelEdit = useCallback(() => {
 		setEditMode(false);

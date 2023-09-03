@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
+import { DocumentContext } from '../contexts.ts';
 import { IOutputComponentProps, StateSetter } from '../contracts.ts';
-import { applyReshapeTransformationArray } from '../utilities.ts';
+import {
+	applyReshapeTransformationArray,
+	assertNotNull,
+} from '../utilities.ts';
 
 interface Props extends IOutputComponentProps {
 	delimiter: string;
@@ -26,19 +30,22 @@ function arrayToDsv(data: Array<Array<string>>, delimiter = ','): string {
 
 export const TransformDelimiterSeparatedValues = ({
 	delimiter,
-	transformManifest,
 	filteredJson,
 	onTransformerMount,
 	setShowButtons,
 }: Props) => {
-	const manifest = useMemo(
-		() => Object.values(transformManifest),
-		[transformManifest],
-	);
+	const { document } = useContext(DocumentContext);
+
+	const manifest = useMemo(() => {
+		assertNotNull(document.manifest, 'No "manifest" found in this document');
+
+		return Object.values(document.manifest);
+	}, [document.manifest]);
 	const [processed, setProcessed] = useState<Array<Array<string>>>([]);
 
 	const generatedDSV = useMemo(
-		() => arrayToDsv([manifest.map((c) => c.name), ...processed], delimiter),
+		() =>
+			arrayToDsv([manifest.map((c) => c.name ?? ''), ...processed], delimiter),
 		[delimiter, manifest, processed],
 	);
 	const exportToDsv = useCallback(() => generatedDSV, [generatedDSV]);
@@ -53,7 +60,7 @@ export const TransformDelimiterSeparatedValues = ({
 			return;
 		}
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
-	}, [transformManifest, filteredJson, manifest, setShowButtons]);
+	}, [filteredJson, manifest, setShowButtons]);
 
 	useEffect(() => {
 		onTransformerMount(exportToDsv);
@@ -72,7 +79,7 @@ export const TransformDelimiterSeparatedValues = ({
 			<thead className="sticky top-0 bg-white">
 				<tr className="text-left">
 					{manifest.map((column) =>
-						column.name.trim() === '' ? null : (
+						column.name?.trim() === '' ? null : (
 							<th key={column.uuid}>{column.name}</th>
 						),
 					)}

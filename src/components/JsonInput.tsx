@@ -2,12 +2,14 @@ import {
 	ClipboardEvent,
 	SyntheticEvent,
 	useCallback,
+	useContext,
 	useEffect,
 	useState,
 } from 'react';
 import { JsonObject } from 'type-fest';
 import { useDebounce } from 'usehooks-ts';
 
+import { DocumentContext } from '../contexts.ts';
 import { FilteredJson } from '../contracts.ts';
 import { applyJMESPath, DisableGrammarlyProps } from '../utilities.ts';
 
@@ -28,14 +30,18 @@ interface Props {
 }
 
 export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
+	const {
+		document: { query },
+		setDocument,
+	} = useContext(DocumentContext);
+
 	const [rawJson, setRawJson] = useState('');
 	const [rawJsonError, setRawJsonError] = useState<string | null>(null);
 	const [parsedJson, setParsedJson] = useState<JsonObject>({});
-	const [jmesPath, setJmesPath] = useState('');
 	const [jmesPathError, setJmesPathError] = useState<string | null>(null);
 
 	const debouncedRawJson = useDebounce(rawJson, 1000);
-	const debouncedJmesPath = useDebounce(jmesPath, 500);
+	const debouncedJmesPath = useDebounce(query as string, 500);
 
 	const handleFromJsonOnChange = useCallback(
 		(event: SyntheticEvent<HTMLTextAreaElement>) => {
@@ -66,9 +72,13 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 	);
 	const handleJmesPathOnChange = useCallback(
 		(event: SyntheticEvent<HTMLInputElement>) => {
-			setJmesPath(event.currentTarget.value);
+			const newQuery = event.currentTarget.value;
+
+			setDocument((draft) => {
+				draft.query = newQuery;
+			});
 		},
-		[],
+		[setDocument],
 	);
 
 	useEffect(() => {
@@ -125,7 +135,12 @@ export const JsonInput = ({ filteredJson, onJsonFiltered }: Props) => {
 				<label className="font-bold m-0" htmlFor="jq-filter">
 					<a href="https://jmespath.org/tutorial.html">JMESPath</a>
 				</label>
-				<input type="text" id="jq-filter" onChange={handleJmesPathOnChange} />
+				<input
+					type="text"
+					id="jq-filter"
+					onChange={handleJmesPathOnChange}
+					value={query as string}
+				/>
 				{jmesPathError && <p className="text-red-800">{jmesPathError}</p>}
 			</div>
 			<div className="flex flex-col gap-2">

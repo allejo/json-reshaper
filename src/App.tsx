@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useImmer } from 'use-immer';
 
+import { ReShaperDocument } from './ReShaperDocument.js';
 import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
@@ -12,9 +13,14 @@ import {
 	createReShaperDocument,
 	IDocumentContext,
 } from './contexts.ts';
-import { FilteredJson, TransformManifest } from './contracts.ts';
+import { FilteredJson } from './contracts.ts';
+import { base64ToBuffer } from './utilities.ts';
 
 import './App.css';
+
+function getQueryParams() {
+	return new URLSearchParams(window.location.hash.substring(1));
+}
 
 function App() {
 	const [document, setDocument] = useImmer(createReShaperDocument());
@@ -27,7 +33,23 @@ function App() {
 	);
 
 	const [filteredJson, setFilteredJson] = useState<FilteredJson>([]);
-	const [columnQueries, setColumnQueries] = useState<TransformManifest>({});
+
+	useEffect(() => {
+		const params = getQueryParams();
+
+		if (params.get('v') === '1') {
+			const document = params.get('d');
+
+			if (document !== null) {
+				const buffer = base64ToBuffer(document);
+				const message = ReShaperDocument.decode(buffer);
+
+				docContext.setDocument(message.toJSON());
+			}
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<DocumentContext.Provider value={docContext}>
@@ -41,14 +63,8 @@ function App() {
 							onJsonFiltered={setFilteredJson}
 						/>
 						<div className="screen-half grid-rows-2">
-							<ColumnEditor
-								transformManifest={columnQueries}
-								onManifestChange={setColumnQueries}
-							/>
-							<OutputPreview
-								columnQueries={columnQueries}
-								filteredJson={filteredJson}
-							/>
+							<ColumnEditor />
+							<OutputPreview filteredJson={filteredJson} />
 						</div>
 					</div>
 					<Footer />
