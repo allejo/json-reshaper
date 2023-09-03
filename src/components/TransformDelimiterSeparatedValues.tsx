@@ -45,7 +45,7 @@ export const TransformDelimiterSeparatedValues = ({
 
 	useEffect(() => {
 		setShowButtons(processed.length > 1);
-	}, [processed]);
+	}, [processed, setShowButtons]);
 
 	useEffect(() => {
 		if (manifest.length === 0) {
@@ -53,7 +53,7 @@ export const TransformDelimiterSeparatedValues = ({
 			return;
 		}
 		setProcessed(applyReshapeTransformationArray(filteredJson, manifest));
-	}, [transformManifest, filteredJson, manifest]);
+	}, [transformManifest, filteredJson, manifest, setShowButtons]);
 
 	useEffect(() => {
 		onTransformerMount(exportToDsv);
