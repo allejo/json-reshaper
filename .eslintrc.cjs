@@ -9,6 +9,7 @@ module.exports = {
 		'plugin:@typescript-eslint/recommended-requiring-type-checking',
 		'plugin:react-hooks/recommended',
 	],
+	ignorePatterns: ['src/ReShaperDocument.d.ts', 'src/ReShaperDocument.js'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 'latest',

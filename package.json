@@ -4,9 +4,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "tsc && vite build",
-		"dev": "vite",
-		"format": "prettier --write .",
+		"build": "npm run gen-proto && tsc && vite build",
+		"dev": "npm run gen-proto && vite",
+		"format": "npm run format:prettier && npm run format:proto",
+		"format:prettier": "prettier --write .",
+		"format:proto": "buf format src/ReShaperDocument.proto -o src/ReShaperDocument.proto",
+		"gen-proto": "pbjs -t static-module -w es6 -o src/ReShaperDocument.js src/ReShaperDocument.proto && pbts -o src/ReShaperDocument.d.ts src/ReShaperDocument.js",
+		"postinstall": "npm run gen-proto",
 		"lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
 		"test": "jest src"
@@ -30,6 +34,8 @@
 		"postcss": "^8.4.27",
 		"postcss-extend-rule": "^4.0.0",
 		"postcss-nesting": "^12.0.1",
+		"protobufjs": "^7.2.5",
+		"protobufjs-cli": "^1.1.2",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-hot-toast": "^2.4.1",
@@ -40,6 +46,7 @@
 	},
 	"devDependencies": {
 		"@allejo/prettier-config": "^1.0.2",
+		"@bufbuild/buf": "^1.26.1",
 		"@types/jest": "^29.5.3",
 		"@types/react": "^18.2.14",
 		"@types/react-dom": "^18.2.6",

@@ -1,24 +1,19 @@
 import { createContext } from 'react';
 import { Updater } from 'use-immer';
 
-import { OutputFormat, TransformManifest } from './contracts.ts';
-
-export interface ReShaperDocument {
-	name: string;
-	outputFormat: OutputFormat;
-	manifest: TransformManifest;
-}
+import { IReShaperDocument, OutputFormat } from './ReShaperDocument.js';
 
 export interface IDocumentContext {
-	document: ReShaperDocument;
-	setDocument: Updater<ReShaperDocument>;
+	document: IReShaperDocument;
+	setDocument: Updater<IReShaperDocument>;
 }
 
-export function createReShaperDocument(): ReShaperDocument {
+export function createReShaperDocument(): IReShaperDocument {
 	return {
 		name: '',
-		outputFormat: OutputFormat.CSV,
-		manifest: {},
+		format: OutputFormat.CSV,
+		query: '',
+		manifest: [],
 	};
 }
 
