@@ -3,13 +3,13 @@ import { search } from 'jmespath';
 import { util } from 'protobufjs';
 import { JsonObject, JsonValue } from 'type-fest';
 
+import { FilteredJson } from './contracts.ts';
 import {
 	ColumnType,
 	IColumnDefinition,
 	IReShaperDocument,
 	ReShaperDocument,
 } from './ReShaperDocument.js';
-import { FilteredJson } from './contracts.ts';
 
 /**
  * @see https://stackoverflow.com/a/46777787

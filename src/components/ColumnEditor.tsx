@@ -2,8 +2,8 @@ import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useCallback, useContext, useMemo } from 'react';
 
-import { ColumnType } from '../ReShaperDocument.js';
 import { DocumentContext } from '../contexts.ts';
+import { ColumnType } from '../ReShaperDocument.js';
 import { ColumnEntry } from './ColumnEntry.tsx';
 
 export const ColumnEditor = () => {

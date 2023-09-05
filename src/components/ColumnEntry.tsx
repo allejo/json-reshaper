@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
 import { ChangeEvent, KeyboardEvent, useCallback } from 'react';
 
-import { ColumnType, IColumnDefinition } from '../ReShaperDocument.js';
 import { FormFieldType } from '../contracts.ts';
+import { ColumnType, IColumnDefinition } from '../ReShaperDocument.js';
 import { assertNotNull } from '../utilities.ts';
 import { EnumSelect } from './EnumSelect.tsx';
 

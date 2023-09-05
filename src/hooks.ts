@@ -2,9 +2,9 @@ import { Draft } from 'immer';
 import { invert } from 'lodash';
 import { SyntheticEvent, useCallback, useMemo } from 'react';
 
-import { IReShaperDocument } from './ReShaperDocument.js';
 import { IDocumentContext } from './contexts.ts';
 import { FormFieldType, StateSetter } from './contracts.ts';
+import { IReShaperDocument } from './ReShaperDocument.js';
 
 export function useEnumByName(enum_: object) {
 	return useMemo(() => invert(enum_), [enum_]);

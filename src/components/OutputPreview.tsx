@@ -2,7 +2,6 @@ import { ChangeEvent, useCallback, useContext, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useCopyToClipboard } from 'usehooks-ts';
 
-import { OutputFormat } from '../ReShaperDocument.js';
 import { DocumentContext } from '../contexts.ts';
 import {
 	DataTransformerFxn,
@@ -10,6 +9,7 @@ import {
 	TransformerMountFxn,
 } from '../contracts.ts';
 import { useEnumByName } from '../hooks.ts';
+import { OutputFormat } from '../ReShaperDocument.js';
 import { assertNotNull } from '../utilities.ts';
 import { EnumSelect } from './EnumSelect.tsx';
 import { TransformDelimiterSeparatedValues } from './TransformDelimiterSeparatedValues.tsx';

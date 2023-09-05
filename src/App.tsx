@@ -8,8 +8,8 @@ import { JsonInput } from './components/JsonInput.tsx';
 import { OutputPreview } from './components/OutputPreview.tsx';
 import { Toolbar } from './components/Toolbar.tsx';
 import {
-	DocumentContext,
 	createReShaperDocument,
+	DocumentContext,
 	IDocumentContext,
 } from './contexts.ts';
 import { FilteredJson } from './contracts.ts';
