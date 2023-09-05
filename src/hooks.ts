@@ -3,10 +3,10 @@ import { invert } from 'lodash';
 import { SyntheticEvent, useCallback, useMemo } from 'react';
 
 import { IDocumentContext } from './contexts.ts';
-import { FormFieldType, StateSetter } from './contracts.ts';
+import { Enum, FormFieldType, StateSetter } from './contracts.ts';
 import { IReShaperDocument } from './ReShaperDocument.js';
 
-export function useEnumByName(enum_: object) {
+export function useEnumByName(enum_: Enum) {
 	return useMemo(() => invert(enum_), [enum_]);
 }
 

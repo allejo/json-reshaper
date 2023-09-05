@@ -8,10 +8,10 @@ import { serializeReShaperDocument } from '../../utilities.ts';
 import { Button } from '../Button.tsx';
 
 export const SaveButton = () => {
-	const docContext = useContext(DocumentContext);
+	const { document } = useContext(DocumentContext);
 
 	const handleOnClick = useCallback(() => {
-		const serialized = serializeReShaperDocument(docContext.document);
+		const serialized = serializeReShaperDocument(document);
 		const qParams = new URLSearchParams({
 			v: '1',
 			d: serialized,
@@ -19,7 +19,7 @@ export const SaveButton = () => {
 
 		window.location.hash = qParams.toString();
 		toast.success('Bookmark or share the updated URL');
-	}, [docContext.document]);
+	}, [document]);
 
 	return (
 		<Button

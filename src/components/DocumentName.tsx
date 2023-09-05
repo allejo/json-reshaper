@@ -7,16 +7,16 @@ import { useFieldWithState } from '../hooks.ts';
 import { Button } from './Button.tsx';
 
 export const DocumentName = () => {
-	const docContext = useContext(DocumentContext);
+	const { document, setDocument } = useContext(DocumentContext);
 	const manifestNameID = useId();
 	const [editMode, setEditMode] = useState(false);
-	const [draftName, setDraftName] = useState(docContext.document.name ?? '');
+	const [draftName, setDraftName] = useState(document.name ?? '');
 	const handleManifestNameChange = useFieldWithState(setDraftName);
 
 	const handleEnableEdit = useCallback(() => {
 		setEditMode(true);
-		setDraftName(docContext.document.name ?? '');
-	}, [docContext.document.name]);
+		setDraftName(document.name ?? '');
+	}, [document.name]);
 	const handleCancelEdit = useCallback(() => {
 		setEditMode(false);
 	}, []);
@@ -24,17 +24,17 @@ export const DocumentName = () => {
 		setEditMode(false);
 
 		if (draftName.trim().length > 0) {
-			docContext.setDocument((draft) => {
+			setDocument((draft) => {
 				draft.name = draftName;
 			});
 		}
-	}, [docContext, draftName]);
+	}, [draftName, setDocument]);
 
 	if (!editMode) {
 		return (
 			<div className="flex">
 				<h1 className="mr-2 text-2xl">
-					{docContext.document.name || <em>Untitled Document</em>}
+					{document.name || <em>Untitled Document</em>}
 				</h1>
 				<Button
 					type={ButtonType.Plain}

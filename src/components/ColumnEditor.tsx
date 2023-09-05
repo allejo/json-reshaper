@@ -37,7 +37,8 @@ export const ColumnEditor = () => {
 	const handleOnEdit = useCallback(
 		(index: number, name: string, value: number | string) => {
 			setDocument((draft) => {
-				// @ts-expect-error Every field in an IColumnDefinition can have different types (e.g. UUIDv4 vs string)
+				// @ts-expect-error Every field in an IColumnDefinition can have different types
+				// (e.g. number, string, IDateConversion, etc.)
 				draft.manifest[index][name] = value;
 
 				if (name === 'type') {

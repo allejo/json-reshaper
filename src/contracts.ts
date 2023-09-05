@@ -4,7 +4,10 @@ import { JsonObject } from 'type-fest';
 /**
  * @see https://stackoverflow.com/a/50159864
  */
-export type Enum<E> = Record<keyof E, number | string> & {
+export type Enum<E extends object = object> = Record<
+	keyof E,
+	number | string
+> & {
 	[k: number]: string;
 };
 

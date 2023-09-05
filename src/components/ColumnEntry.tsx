@@ -24,7 +24,10 @@ export const ColumnEntry = ({
 	onEnter,
 }: Props) => {
 	const columnType = column.type;
-	assertNotNull(columnType, '');
+	assertNotNull(
+		columnType,
+		'columnType is not defined; this should never happen',
+	);
 
 	const slugifyInputId = useCallback(
 		(columnName: string) => `${kebabCase(columnName)}-${index}`,
