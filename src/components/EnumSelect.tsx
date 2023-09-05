@@ -1,9 +1,9 @@
-import { HTMLAttributes } from 'react';
+import { SelectHTMLAttributes } from 'react';
 
 import { Enum } from '../contracts.ts';
 import { useEnumByName } from '../hooks.ts';
 
-interface Props extends HTMLAttributes<HTMLSelectElement> {
+interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
 	enum_: Enum;
 	exclude: number[];
 	value: number;

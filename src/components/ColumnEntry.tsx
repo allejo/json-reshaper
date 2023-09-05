@@ -37,7 +37,7 @@ export const ColumnEntry = ({
 		(key: string) => (e: ChangeEvent<FormFieldType>) => {
 			let value: string | number = e.currentTarget.value;
 
-			if (key in ['name', 'type']) {
+			if (['name', 'type'].includes(key)) {
 				value = +value;
 			}
 
@@ -89,6 +89,7 @@ export const ColumnEntry = ({
 				<EnumSelect
 					enum_={ColumnType}
 					exclude={[ColumnType.UNKNOWN_TYPE]}
+					onChange={handleOnChange('type')}
 					value={columnType}
 				/>
 			</td>
@@ -103,7 +104,7 @@ export const ColumnEntry = ({
 					value={column.query!}
 					onKeyDown={handleKeyPress}
 				/>
-				{column.type === ColumnType.Date && (
+				{column.type == ColumnType.Date && (
 					<div className="flex gap-2 mt-4 pl-4">
 						<div>
 							<label htmlFor={colDateFrom} className="text-sm font-bold">
