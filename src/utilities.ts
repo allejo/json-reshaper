@@ -3,7 +3,12 @@ import { search } from 'jmespath';
 import { util } from 'protobufjs';
 import { JsonObject, JsonValue } from 'type-fest';
 
-import { ColumnType, IColumnDefinition } from './ReShaperDocument.js';
+import {
+	ColumnType,
+	IColumnDefinition,
+	IReShaperDocument,
+	ReShaperDocument,
+} from './ReShaperDocument.js';
 import { FilteredJson } from './contracts.ts';
 
 /**
@@ -157,13 +162,17 @@ export function assertNotNull<T>(
 	}
 }
 
-export function base64ToBuffer(b64: string): Uint8Array {
-	const buffer = util.newBuffer(util.base64.length(b64));
-	util.base64.decode(b64, buffer, 0);
+export function serializeReShaperDocument(document: IReShaperDocument): string {
+	const message = ReShaperDocument.create(document);
+	const buffer = ReShaperDocument.encode(message).finish();
 
-	return buffer;
+	return util.base64.encode(buffer, 0, buffer.length);
 }
 
-export function bufferToBase64(buffer: Uint8Array) {
-	return util.base64.encode(buffer, 0, buffer.length);
+export function deserializeReShaperDocument(b64: string): IReShaperDocument {
+	const buffer = util.newBuffer(util.base64.length(b64));
+	util.base64.decode(b64, buffer, 0);
+	const message = ReShaperDocument.decode(buffer);
+
+	return ReShaperDocument.toObject(message);
 }

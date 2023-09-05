@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useImmer } from 'use-immer';
 
-import { ReShaperDocument } from './ReShaperDocument.js';
 import { ColumnEditor } from './components/ColumnEditor.tsx';
 import { Footer } from './components/Footer.tsx';
 import { JsonInput } from './components/JsonInput.tsx';
@@ -14,7 +13,7 @@ import {
 	IDocumentContext,
 } from './contexts.ts';
 import { FilteredJson } from './contracts.ts';
-import { base64ToBuffer } from './utilities.ts';
+import { deserializeReShaperDocument } from './utilities.ts';
 
 import './App.css';
 
@@ -41,10 +40,7 @@ function App() {
 			const document = params.get('d');
 
 			if (document !== null) {
-				const buffer = base64ToBuffer(document);
-				const message = ReShaperDocument.decode(buffer);
-
-				docContext.setDocument(message.toJSON());
+				docContext.setDocument(deserializeReShaperDocument(document));
 			}
 		}
 
