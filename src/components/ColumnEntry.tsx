@@ -114,7 +114,7 @@ export const ColumnEntry = ({
 								type="text"
 								id={colDateFrom}
 								placeholder="e.g. 'unix'"
-								onChange={handleOnChange('fromFormat')}
+								onChange={handleOnChange('dateConversion.from')}
 								value={column.dateConversion!.from!}
 							/>
 						</div>
@@ -126,8 +126,8 @@ export const ColumnEntry = ({
 								type="text"
 								id={colDateTo}
 								placeholder="e.g. YYYY-MM-DD"
-								onChange={handleOnChange('toFormat')}
-								value={column.dateConversion!.from!}
+								onChange={handleOnChange('dateConversion.to')}
+								value={column.dateConversion!.to!}
 							/>
 						</div>
 					</div>

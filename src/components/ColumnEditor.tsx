@@ -1,9 +1,11 @@
 import { faEllipsisVertical, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { set } from 'lodash';
 import { useCallback, useContext, useMemo } from 'react';
 
 import { DocumentContext } from '../contexts.ts';
 import { ColumnType } from '../ReShaperDocument.js';
+import { assertNotNull } from '../utilities.ts';
 import { ColumnEntry } from './ColumnEntry.tsx';
 
 export const ColumnEditor = () => {
@@ -37,9 +39,9 @@ export const ColumnEditor = () => {
 	const handleOnEdit = useCallback(
 		(index: number, name: string, value: number | string) => {
 			setDocument((draft) => {
-				// @ts-expect-error Every field in an IColumnDefinition can have different types
-				// (e.g. number, string, IDateConversion, etc.)
-				draft.manifest[index][name] = value;
+				assertNotNull(draft.manifest, 'No manifest found in this document');
+
+				set(draft.manifest[index], name, value);
 
 				if (name === 'type') {
 					if (value === ColumnType.String) {
