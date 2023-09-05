@@ -1,4 +1,4 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { search } from 'jmespath';
 import { util } from 'protobufjs';
 import { JsonObject, JsonValue } from 'type-fest';

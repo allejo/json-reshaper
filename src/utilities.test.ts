@@ -1,6 +1,6 @@
-import { randomUUID } from 'crypto';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { JsonObject } from 'type-fest';
+import { describe, it, expect } from 'vitest';
 
 import { ColumnType, IColumnDefinition } from './ReShaperDocument.js';
 import { applyReshapeTransformationArray } from './utilities.ts';
@@ -21,10 +21,9 @@ describe('Utilities > applyReshapeTransformation', () => {
 			},
 		];
 
-		const uuid = randomUUID();
 		const manifest: IColumnDefinition[] = [
 			{
-				uuid,
+				uuid: 'abcdef',
 				type: ColumnType.Date,
 				dateConversion: {
 					from: 'unix',
