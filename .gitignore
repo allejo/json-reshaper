@@ -23,3 +23,7 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw?
+
+# Generated source files
+/src/ReShaperDocument.d.ts
+/src/ReShaperDocument.js

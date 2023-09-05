@@ -3,41 +3,51 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { kebabCase } from 'lodash';
 import { ChangeEvent, KeyboardEvent, useCallback } from 'react';
 
-import {
-	ColumnDefinition,
-	ColumnType,
-	FormFieldType,
-	UUIDv4,
-} from '../contracts.ts';
+import { FormFieldType } from '../contracts.ts';
+import { ColumnType, IColumnDefinition } from '../ReShaperDocument.js';
+import { assertNotNull } from '../utilities.ts';
+import { EnumSelect } from './EnumSelect.tsx';
 
 interface Props {
-	uuid: UUIDv4;
-	column: ColumnDefinition;
-	onChange: (uuid: UUIDv4, name: string, value: string) => void;
-	onDelete: (uuid: UUIDv4) => void;
+	index: number;
+	column: IColumnDefinition;
+	onChange: (index: number, name: string, value: number | string) => void;
+	onDelete: (index: number) => void;
 	onEnter: () => void;
 }
 
 export const ColumnEntry = ({
 	column,
-	uuid,
+	index,
 	onChange,
 	onDelete,
 	onEnter,
 }: Props) => {
+	const columnType = column.type;
+	assertNotNull(
+		columnType,
+		'columnType is not defined; this should never happen',
+	);
+
 	const slugifyInputId = useCallback(
-		(columnName: string) => `${kebabCase(columnName)}-${uuid}`,
-		[uuid],
+		(columnName: string) => `${kebabCase(columnName)}-${index}`,
+		[index],
 	);
 	const handleOnChange = useCallback(
 		(key: string) => (e: ChangeEvent<FormFieldType>) => {
-			onChange(uuid, key, e.currentTarget.value);
+			let value: string | number = e.currentTarget.value;
+
+			if (key in ['name', 'type']) {
+				value = +value;
+			}
+
+			onChange(index, key, value);
 		},
-		[onChange, uuid],
+		[onChange, index],
 	);
 	const handleOnDelete = useCallback(() => {
-		onDelete(uuid);
-	}, [onDelete, uuid]);
+		onDelete(index);
+	}, [onDelete, index]);
 
 	const handleKeyPress = (e: KeyboardEvent) => {
 		if (e.key === 'Enter') {
@@ -68,7 +78,7 @@ export const ColumnEntry = ({
 					type="text"
 					id={colNameId}
 					onChange={handleOnChange('name')}
-					value={column.name}
+					value={column.name!}
 					onKeyDown={handleKeyPress}
 				/>
 			</td>
@@ -76,15 +86,11 @@ export const ColumnEntry = ({
 				<label htmlFor={colTypeId} className="sr-only">
 					Column Type
 				</label>
-				<select
-					id={colTypeId}
-					onChange={handleOnChange('type')}
-					value={column.type}
-				>
-					{Object.values(ColumnType).map((type) => (
-						<option key={type}>{type}</option>
-					))}
-				</select>
+				<EnumSelect
+					enum_={ColumnType}
+					exclude={[ColumnType.UNKNOWN_TYPE]}
+					value={columnType}
+				/>
 			</td>
 			<td>
 				<label htmlFor={colQueryId} className="sr-only">
@@ -94,7 +100,7 @@ export const ColumnEntry = ({
 					type="text"
 					id={colQueryId}
 					onChange={handleOnChange('query')}
-					value={column.query}
+					value={column.query!}
 					onKeyDown={handleKeyPress}
 				/>
 				{column.type === ColumnType.Date && (
@@ -108,7 +114,7 @@ export const ColumnEntry = ({
 								id={colDateFrom}
 								placeholder="e.g. 'unix'"
 								onChange={handleOnChange('fromFormat')}
-								value={column.fromFormat}
+								value={column.dateConversion!.from!}
 							/>
 						</div>
 						<div>
@@ -120,7 +126,7 @@ export const ColumnEntry = ({
 								id={colDateTo}
 								placeholder="e.g. YYYY-MM-DD"
 								onChange={handleOnChange('toFormat')}
-								value={column.toFormat}
+								value={column.dateConversion!.from!}
 							/>
 						</div>
 					</div>

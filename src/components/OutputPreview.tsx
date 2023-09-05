@@ -1,31 +1,35 @@
-import { ChangeEvent, useCallback, useRef, useState } from 'react';
+import { ChangeEvent, useCallback, useContext, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useCopyToClipboard } from 'usehooks-ts';
 
+import { DocumentContext } from '../contexts.ts';
 import {
 	DataTransformerFxn,
 	FilteredJson,
 	TransformerMountFxn,
-	TransformManifest,
 } from '../contracts.ts';
+import { useEnumByName } from '../hooks.ts';
+import { OutputFormat } from '../ReShaperDocument.js';
+import { assertNotNull } from '../utilities.ts';
+import { EnumSelect } from './EnumSelect.tsx';
 import { TransformDelimiterSeparatedValues } from './TransformDelimiterSeparatedValues.tsx';
 
-enum OutputFormat {
-	CSV = 'csv',
-	TSV = 'tsv',
-}
-
 interface Props {
-	columnQueries: TransformManifest;
 	filteredJson: FilteredJson;
 }
-const MimeType: Record<OutputFormat, string> = {
+const MimeType: Record<OutputFormat, string | undefined> = {
+	[OutputFormat.UNKNOWN_FMT]: undefined,
 	[OutputFormat.CSV]: 'text/csv',
 	[OutputFormat.TSV]: 'text/tab-seprated-values',
 };
 
-export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
-	const [format, setFormat] = useState<OutputFormat>(OutputFormat.CSV);
+export const OutputPreview = ({ filteredJson }: Props) => {
+	const { document, setDocument } = useContext(DocumentContext);
+	const outFmt = useEnumByName(OutputFormat);
+	const format = document.format;
+
+	assertNotNull(format, 'Unexpected output format is null or undefined');
+
 	const [, copy] = useCopyToClipboard();
 	const [fileLink, setFileLink] = useState<string>('');
 	const [showButtons, setShowButtons] = useState<boolean>(false);
@@ -35,9 +39,13 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 
 	const handleFormatOnChange = useCallback(
 		(e: ChangeEvent<HTMLSelectElement>) => {
-			setFormat(e.currentTarget.value as OutputFormat);
+			const newFormat = +e.currentTarget.value;
+
+			setDocument((draft) => {
+				draft.format = newFormat as OutputFormat;
+			});
 		},
-		[],
+		[setDocument],
 	);
 	const handleTransformerMount = useCallback<TransformerMountFxn>(
 		(transformer) => {
@@ -59,11 +67,12 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 
 	const handleDownload = useCallback(() => {
 		const transformedText = getTransformedAsText.current();
-		const type = MimeType[format];
-		const data = new Blob([transformedText], { type });
+		const format = document.format ?? OutputFormat.UNKNOWN_FMT;
+		const data = new Blob([transformedText], { type: MimeType[format] });
 		const url = window.URL.createObjectURL(data);
+
 		setFileLink(url);
-	}, [format]);
+	}, [document.format]);
 
 	return (
 		<section className="flex flex-col min-w-0">
@@ -74,39 +83,36 @@ export const OutputPreview = ({ columnQueries, filteredJson }: Props) => {
 						Format
 					</label>
 
-					<select
+					<EnumSelect
+						enum_={OutputFormat}
+						exclude={[OutputFormat.UNKNOWN_FMT]}
 						id="format"
 						className="w-auto mb-0"
 						value={format}
 						onChange={handleFormatOnChange}
-					>
-						{Object.values(OutputFormat).map((format) => (
-							<option key={format}>{format}</option>
-						))}
-					</select>
+					/>
 				</div>
 				{showButtons && (
 					<div className="ml-auto flex gap-2">
 						<button className="border py-1 px-2" onClick={handleCopyEvent}>
-							Copy as {format.toUpperCase()}
+							Copy as {outFmt[format]}
 						</button>
 						<a
-							download={`json-reshaper.${format}`}
+							download={`json-reshaper.${outFmt[document.format!]}`}
 							href={fileLink}
 							className="border py-1 px-2"
 							onClick={handleDownload}
 						>
-							Download {format.toUpperCase()}
+							Download {outFmt[format]}
 						</a>
 					</div>
 				)}
 			</div>
 			<div className="bg-white grow p-3 rounded overflow-hidden h-0">
 				<div className="max-h-full h-full overflow-auto">
-					{[OutputFormat.CSV, OutputFormat.TSV].includes(format) && (
+					{[OutputFormat.CSV, OutputFormat.TSV].includes(document.format!) && (
 						<TransformDelimiterSeparatedValues
-							delimiter={format === OutputFormat.CSV ? ',' : '\t'}
-							transformManifest={columnQueries}
+							delimiter={document.format === OutputFormat.CSV ? ',' : '\t'}
 							filteredJson={filteredJson}
 							onTransformerMount={handleTransformerMount}
 							setShowButtons={setShowButtons}

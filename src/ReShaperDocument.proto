@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+message DateConversion {
+  string from = 1;
+  string to = 2;
+}
+
+message ColumnDefinition {
+  string uuid = 1;
+  string name = 2;
+  string query = 3;
+  ColumnType type = 4;
+  optional DateConversion dateConversion = 5;
+}
+
+message ReShaperDocument {
+  string name = 1;
+  OutputFormat format = 2;
+  repeated ColumnDefinition manifest = 3;
+  string query = 4;
+}
+
+enum OutputFormat {
+  UNKNOWN_FMT = 0;
+  CSV = 1;
+  TSV = 2;
+}
+
+enum ColumnType {
+  UNKNOWN_TYPE = 0;
+  String = 1;
+  Date = 2;
+}

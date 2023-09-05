@@ -1,31 +1,15 @@
 import { Dispatch, SetStateAction } from 'react';
 import { JsonObject } from 'type-fest';
 
-export type UUIDv4 = ReturnType<typeof crypto.randomUUID>;
-
-export enum ColumnType {
-	Date = 'date',
-	String = 'string',
-}
-
-interface BaseColumn {
-	uuid: UUIDv4;
-	name: string;
-	query: string;
-}
-
-export interface DateColumn extends BaseColumn {
-	type: ColumnType.Date;
-	fromFormat: string;
-	toFormat: string;
-}
-
-export interface StringColumn extends BaseColumn {
-	type: ColumnType.String;
-}
-
-export type ColumnDefinition = DateColumn | StringColumn;
-export type TransformManifest = Record<UUIDv4, ColumnDefinition>;
+/**
+ * @see https://stackoverflow.com/a/50159864
+ */
+export type Enum<E extends object = object> = Record<
+	keyof E,
+	number | string
+> & {
+	[k: number]: string;
+};
 
 export type DataTransformerFxn = () => string;
 export type TransformerMountFxn = (transformer: DataTransformerFxn) => void;
@@ -33,7 +17,6 @@ export type TransformerMountFxn = (transformer: DataTransformerFxn) => void;
 export interface IOutputComponentProps {
 	filteredJson: FilteredJson;
 	onTransformerMount: TransformerMountFxn;
-	transformManifest: TransformManifest;
 }
 
 export type FilteredJson = JsonObject[];
@@ -43,3 +26,10 @@ export type FormFieldType =
 	| HTMLInputElement
 	| HTMLSelectElement
 	| HTMLTextAreaElement;
+
+export enum ButtonType {
+	None,
+	Plain,
+	Action,
+	Danger,
+}

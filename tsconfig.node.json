@@ -6,5 +6,5 @@
 		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true
 	},
-	"include": ["vite.config.ts", "postcss.config.js", "jest.config.cjs"]
+	"include": ["postcss.config.js", "vite.config.ts"]
 }

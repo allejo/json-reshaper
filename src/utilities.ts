@@ -1,8 +1,15 @@
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { search } from 'jmespath';
+import { util } from 'protobufjs';
 import { JsonObject, JsonValue } from 'type-fest';
 
-import { ColumnDefinition, ColumnType, FilteredJson } from './contracts.ts';
+import { FilteredJson } from './contracts.ts';
+import {
+	ColumnType,
+	IColumnDefinition,
+	IReShaperDocument,
+	ReShaperDocument,
+} from './ReShaperDocument.js';
 
 /**
  * @see https://stackoverflow.com/a/46777787
@@ -26,9 +33,9 @@ export function applyReshapeTransformation<
 	R = never,
 >(
 	json: FilteredJson,
-	columnDefinitions: ColumnDefinition[],
+	columnDefinitions: IColumnDefinition[],
 	collectionFactory: () => T,
-	callback: (collection: T, value: R, colDef: ColumnDefinition) => void,
+	callback: (collection: T, value: R, colDef: IColumnDefinition) => void,
 ): T[] {
 	const result: T[] = [];
 
@@ -37,6 +44,10 @@ export function applyReshapeTransformation<
 
 		for (const columnDefinition of columnDefinitions) {
 			const { name, query, type } = columnDefinition;
+
+			assertNotNull(name, 'No "name" property in this column definition');
+			assertNotNull(query, 'No "query" property in this column definition');
+			assertNotNull(type, 'No "type" property in this column definition');
 
 			if (name.trim() === '' && query.trim() === '') {
 				continue;
@@ -50,22 +61,24 @@ export function applyReshapeTransformation<
 				if (pathResult === null) {
 					value = 'null' as R;
 				} else if (type === ColumnType.Date) {
+					const fromFmt = columnDefinition.dateConversion?.from;
+					const toFmt = columnDefinition.dateConversion?.to;
 					let date: dayjs.Dayjs;
 
-					if (
-						columnDefinition.fromFormat === 'unix' &&
-						typeof pathResult === 'number'
-					) {
+					assertNotNull(fromFmt, 'No "from" property in this dateConversion');
+					assertNotNull(toFmt, 'No "to" property in this dateConversion');
+
+					if (fromFmt === 'unix' && typeof pathResult === 'number') {
 						date = dayjs.unix(pathResult);
 					} else {
-						date = dayjs(String(pathResult), columnDefinition.fromFormat);
+						date = dayjs(String(pathResult), fromFmt);
 					}
 
 					if (date.isValid()) {
-						if (columnDefinition.toFormat === 'unix') {
+						if (toFmt === 'unix') {
 							value = String(date.unix()) as R;
 						} else {
-							value = date.format(columnDefinition.toFormat) as R;
+							value = date.format(toFmt) as R;
 						}
 					} else {
 						value = pathResult as R;
@@ -96,7 +109,7 @@ export function applyReshapeTransformation<
 
 export function applyReshapeTransformationArray(
 	json: FilteredJson,
-	columnDefinitions: ColumnDefinition[],
+	columnDefinitions: IColumnDefinition[],
 ) {
 	return applyReshapeTransformation(
 		json,
@@ -104,4 +117,62 @@ export function applyReshapeTransformationArray(
 		() => [],
 		(c, v) => c.push(v),
 	);
+}
+
+/**
+ * Accepted data types for the `classList` function.
+ *
+ * @see classList
+ */
+export type ClassList = ([string, boolean] | boolean | string | undefined)[];
+
+/**
+ * Build a list CSS classes that is acceptable to `className`.
+ *
+ * @param {ClassList} classes A list of CSS classes
+ *
+ * @return {string}
+ */
+export function classList(classes: ClassList): string {
+	return classes
+		.map((value) => {
+			if (Array.isArray(value)) {
+				const [cls, shouldRender] = value;
+
+				return shouldRender ? cls : '';
+			}
+
+			if (value === true || value === false) {
+				return '';
+			}
+
+			return value;
+		})
+		.join(' ')
+		.replace(/\s{2,}/g, ' ')
+		.trim();
+}
+
+export function assertNotNull<T>(
+	value: T,
+	message: string,
+): asserts value is NonNullable<T> {
+	if (value == null) {
+		throw new Error(message);
+	}
+}
+
+export function serializeReShaperDocument(document: IReShaperDocument): string {
+	const message = ReShaperDocument.create(document);
+	const buffer = ReShaperDocument.encode(message).finish();
+
+	return util.base64.encode(buffer, 0, buffer.length);
+}
+
+export function deserializeReShaperDocument(b64: string): IReShaperDocument {
+	const buffer = util.newBuffer(util.base64.length(b64));
+	util.base64.decode(b64, buffer, 0);
+	const message = ReShaperDocument.decode(buffer);
+
+	return ReShaperDocument.toObject(message);
 }
