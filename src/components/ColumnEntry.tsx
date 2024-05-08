@@ -37,7 +37,7 @@ export const ColumnEntry = ({
 		(key: string) => (e: ChangeEvent<FormFieldType>) => {
 			let value: string | number = e.currentTarget.value;
 
-			if (['name', 'type'].includes(key)) {
+			if (['type'].includes(key)) {
 				value = +value;
 			}
 
